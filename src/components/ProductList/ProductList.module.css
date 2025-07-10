@@ -1,0 +1,62 @@
+.container {
+  padding: 10px;
+}
+
+.tabs {
+  margin-bottom: 40px;
+}
+
+.tabButton {
+  margin-left: 200px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+
+
+
+.active {
+  background: #333;
+  color: white;
+  font-weight: bold;
+}
+
+.search input {
+  padding: 8px;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.sortContainer {
+  margin: 10px 0;
+}
+
+
+.sortButton {
+  margin-right: 10px;
+  padding: 6px 14px;
+  border: 1px solid #aaa;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.sortButton:hover {
+  background-color: #e0e0e0;
+}
+
+.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
