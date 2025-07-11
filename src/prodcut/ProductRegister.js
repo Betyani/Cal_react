@@ -31,7 +31,7 @@ export default function ProductRegister() {
 
 
     return (
-        <>
+        <div>
             <form onSubmit={handleSubmit}>
                 <h2>상품 등록</h2>
                 <div>
@@ -52,6 +52,6 @@ export default function ProductRegister() {
                     </button>
                 </div>
             </form>
-        </>
+        </div>
     )
 }
