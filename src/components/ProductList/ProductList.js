@@ -14,7 +14,7 @@ export default function ProductList() {
 
   useEffect(() => {
     
-    axios.get('http://localhost:8080/cal/products', {
+    axios.get('http://localhost:8080/cal/product/list', {
       params: {
         keyword: keyword,     // 검색어
         category:  category === "전체" ? "" : category, // "전체"는 빈 값으로 전달
@@ -37,6 +37,8 @@ export default function ProductList() {
 
   return (
      <div className={styles.container}>
+
+
        {/* 카테고리 탭 */}
       <div className={styles.tabs}>
         {categories.map((cat) => (
@@ -50,13 +52,13 @@ export default function ProductList() {
         ))}
       </div>
 
-       {/* 검색 */}
+       {/* 검색창 */}
      
       <div className={styles.search}>
         <input
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          placeholder="검색어 입력"
+          placeholder="상품명을 입력"
         />
       </div>
        {/* 정렬순 버튼 */}
@@ -80,7 +82,10 @@ export default function ProductList() {
   ></button>
       </div>
 
+
+{/* 상품 등록 버튼 */}
 <button onClick={() => navigate('/products/new')}>상품 등록</button>
+
       <h2>상품 목록 ({total}개)</h2>
 {/*
         <input                                         //일단 검색창 열기임
@@ -92,6 +97,7 @@ export default function ProductList() {
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="">전체 카테고리</option>
         <option value="집">집</option>
+      
         <option value="가자">가자</option>
         <option value="자러">자러</option>
      

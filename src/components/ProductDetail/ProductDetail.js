@@ -7,13 +7,18 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/cal/products/${id}`)
+    console.log("==="+id ); // 확인용임 신경 안써도 됨
+    
+    axios.get(`http://localhost:8080/cal/product/detail/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.error("상품 상세 조회 실패:", err));
   }, [id]);
 
   if (!product) return <div>로딩 중...</div>;
 
+
+
+  
   return (
     <div>
       <h2>{product.name}</h2>
