@@ -83,12 +83,11 @@ export default function ProductList() {
       </div>
 
 
-{/* 상품 등록 버튼 */}
-<button onClick={() => navigate('/products/new')}>상품 등록</button>
+{/* 상품 등록 버튼    
+조회쪽에서 만든 상품 등록 미완성 혹시 몰라 놔두는거예요  */
+/*<button onClick={() => navigate('/products/new')}>상품 등록</button>*/}         
 
-      <h2>상품 목록 ({total}개)</h2>
-{/*
-        <input                                         //일단 검색창 열기임
+{/*    <input                                         //일단 검색창 열기임
         type="text"
         placeholder="상품 이름으로 검색"
         value={keyword}
@@ -101,8 +100,9 @@ export default function ProductList() {
         <option value="가자">가자</option>
         <option value="자러">자러</option>
      
-      </select>
-*/}    
+      </select>*/}    
+      
+<h2>상품 목록 ({total}개)</h2>
      <ul>
   {products.map((p) => (
     <li
