@@ -8,14 +8,16 @@ import ProductDetail from './components/ProductDetail/ProductDetail';
 import ProductForm from './components/ProductForm/ProductForm';
 import ProductList from './components/ProductList/ProductList';
 import ProductRegister from './product/ProductRegister';
+import Home from './components/Home/Home'; // 접속시 나오는 홈페이지; 이러면 관리가 명확해진하여 도전해봤습니다.
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <h1> 상품 받아라 </h1>
+        {/* <h1> 상품 받아라 </h1> */}
         <Routes>
-          <Route path="/" element={<ProductList />} />
+          <Route path="/" element={<Home />} /> {/* 여기를 Home으로 바꿈 */}
+          <Route path="/products/list" element={<ProductList />} />
           <Route path="/:id" element={<ProductDetail />} />
           <Route path="/products/new" element={<ProductForm />} />
 
@@ -29,11 +31,11 @@ function App() {
         </Routes>
 
         {/*특정 경로에서만 보이게 하고 싶다면 Routes 안에서 조건부 렌더링도 가능,,, 여기서는 항상 보이도록 배치 */}
-        <div className="componentTachi">
+        {/* <div className="componentTachi">
           <ProductRegister />
           <BoardList />
           <ProductDelete />
-        </div>
+        </div> */}
       </div>
     </Router>
   );
