@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Link 대신 useNavigate으로 변경했습니다
 import './BoardList.css';
 
 function BoardList() {
     const [boards, setBoards] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchBoards();
@@ -34,12 +35,20 @@ function BoardList() {
         }
     };
 
+    const handleGoToForm = () => {
+        navigate("/board/form");
+    };
+
+    const handleGoToDetail = (id) => {
+        navigate(`/board/detail/${id}`);
+    };
+
     return (
         <div className="board-list-container">
             <h2>게시판 목록</h2>
-            <Link to="/board/form">      {/* HTML의 <a href> 대신 */}
-                <button className="board-list-button">게시글 작성</button>
-            </Link>
+            <button className="board-list-button" onClick={handleGoToForm}>
+                게시글 작성
+            </button>
             <table className="board-list-table">
                 <thead>
                     <tr>
@@ -55,7 +64,17 @@ function BoardList() {
                         <tr key={board.id}>
                             <td>{board.id}</td>
                             <td>
-                                <Link to={`/board/detail/${board.id}`}>{board.title}</Link>
+                                <button
+                                    onClick={() => handleGoToDetail(board.id)}
+                                    style={{
+                                        all: 'unset',
+                                        cursor: 'pointer',
+                                        color: 'blue',
+                                        textDecoration: 'underline',
+                                    }}
+                                >
+                                    {board.title}
+                                </button>
                             </td>
                             <td>{board.writer}</td>
                             <td>{JSON.stringify(board.createTime)}</td>
@@ -69,5 +88,4 @@ function BoardList() {
         </div>
     );
 }
-
 export default BoardList;
