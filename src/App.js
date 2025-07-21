@@ -8,6 +8,7 @@ import ProductDetail from './components/ProductDetail/ProductDetail';
 import ProductForm from './components/ProductForm/ProductForm';
 import ProductList from './components/ProductList/ProductList';
 import ProductRegister from './product/ProductRegister';
+import Home from './components/Home/Home'; // 접속시 나오는 홈페이지; 이러면 관리가 명확해진하여 도전해봤습니다.
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
       <div className="App">
         <h1> 상품 받아라 </h1>
         <Routes>
-          <Route path="/" element={<ProductList />} />
+          <Route path="/" element={<Home />} /> {/* 여기를 Home으로 바꿈 */}
+          <Route path="/products/list" element={<ProductList />} />
           <Route path="/:id" element={<ProductDetail />} />
           <Route path="/products/new" element={<ProductForm />} />
 
