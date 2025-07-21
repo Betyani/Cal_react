@@ -60,29 +60,35 @@ function BoardList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {boards.map(board => (
-                        <tr key={board.id}>
-                            <td>{board.id}</td>
-                            <td>
-                                <button
-                                    onClick={() => handleGoToDetail(board.id)}
-                                    style={{
-                                        all: 'unset',
-                                        cursor: 'pointer',
-                                        color: 'blue',
-                                        textDecoration: 'underline',
-                                    }}
-                                >
-                                    {board.title}
-                                </button>
-                            </td>
-                            <td>{board.writer}</td>
-                            <td>{JSON.stringify(board.createTime)}</td>
-                            <td>
-                                <button onClick={() => handleDelete(board.id)}>삭제</button>
-                            </td>
+                    {Array.isArray(boards) && boards.length > 0 ? (
+                        boards.map(board => (
+                            <tr key={board.id}>
+                                <td>{board.id}</td>
+                                <td>
+                                    <button
+                                        onClick={() => handleGoToDetail(board.id)}
+                                        style={{
+                                            all: 'unset',
+                                            cursor: 'pointer',
+                                            color: 'blue',
+                                            textDecoration: 'underline',
+                                        }}
+                                    >
+                                        {board.title}
+                                    </button>
+                                </td>
+                                <td>{board.writer}</td>
+                                <td>{JSON.stringify(board.createTime)}</td>
+                                <td>
+                                    <button onClick={() => handleDelete(board.id)}>삭제</button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="5" style={{ textAlign: 'center' }}>게시글이 없습니다.</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>
