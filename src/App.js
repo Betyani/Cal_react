@@ -14,7 +14,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1> 상품 받아라 </h1>
+        {/* <h1> 상품 받아라 </h1> */}
         <Routes>
           <Route path="/" element={<Home />} /> {/* 여기를 Home으로 바꿈 */}
           <Route path="/products/list" element={<ProductList />} />
@@ -31,11 +31,11 @@ function App() {
         </Routes>
 
         {/*특정 경로에서만 보이게 하고 싶다면 Routes 안에서 조건부 렌더링도 가능,,, 여기서는 항상 보이도록 배치 */}
-        <div className="componentTachi">
+        {/* <div className="componentTachi">
           <ProductRegister />
           <BoardList />
           <ProductDelete />
-        </div>
+        </div> */}
       </div>
     </Router>
   );
