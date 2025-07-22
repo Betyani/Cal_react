@@ -1,0 +1,36 @@
+/* src/components/Header.css */
+.header {
+  background-color: #f8f8f8;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left .nav-link {
+  margin-right: 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-left .nav-link:hover {
+  text-decoration: underline;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  margin-right: 10px;
+}
+
+.logout-button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
