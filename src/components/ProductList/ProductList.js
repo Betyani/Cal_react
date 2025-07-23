@@ -62,24 +62,19 @@ export default function ProductList() {
         />
       </div>
       {/* 정렬순 버튼 */}
-      <div className={styles.sortContainer}>
-        <button onClick={() => setSort('new')}>최신순</button>
-        <button
-          className={`${styles.sortButton} ${sort === 'new' ? styles.active : ''}`}
-          onClick={() => setSort('new')}
-        >최근껄로 드가자</button>
-
-        <button onClick={() => setSort('old')}>오래된순</button>
-        <button
-          className={`${styles.sortButton} ${sort === 'old' ? styles.active : ''}`}
-          onClick={() => setSort('old')}
-        ></button>
-
-        <button onClick={() => setSort('recommend')}>추천순</button>
-        <button
-          className={`${styles.sortButton} ${sort === 'recommend' ? styles.active : ''}`}
-          onClick={() => setSort('recommend')}
-        ></button>
+         <div className={styles.sortContainer}>
+      <button
+        className={`${styles.sortButton} ${sort === 'new' ? styles.active : ''}`}
+        onClick={() => setSort('new')}>
+        최근껄로 드가자</button>
+      <button
+        className={`${styles.sortButton} ${sort === 'old' ? styles.active : ''}`}
+        onClick={() => setSort('old')}>
+        오래된순</button>
+      <button
+        className={`${styles.sortButton} ${sort === 'recommend' ? styles.active : ''}`}
+        onClick={() => setSort('recommend')}>
+        추천순</button>
       </div>
 
 
@@ -87,20 +82,7 @@ export default function ProductList() {
 조회쪽에서 만든 상품 등록 미완성 혹시 몰라 놔두는거예요  */
 /*<button onClick={() => navigate('/products/new')}>상품 등록</button>*/}
 
-      {/*    <input                                         //일단 검색창 열기임
-        type="text"
-        placeholder="상품 이름으로 검색"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-      />
-      <select value={category} onChange={(e) => setCategory(e.target.value)}>
-        <option value="">전체 카테고리</option>
-        <option value="집">집</option>
-      
-        <option value="가자">가자</option>
-        <option value="자러">자러</option>
-     
-      </select>*/}
+   
 
       <h2>상품 목록 ({total}개)</h2>
       <ul>

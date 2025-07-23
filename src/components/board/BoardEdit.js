@@ -10,8 +10,7 @@ export default function BoardEdit() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [writer, setWriter] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);// 로딩 표시용임
 
   useEffect(() => {
     axios.get(`http://localhost:8080/cal/board/detail/${id}`)
@@ -27,6 +26,7 @@ export default function BoardEdit() {
       });
   }, [id]);
 
+//수정 부탁 형식
   const handleUpdate = () => {
     if (!title.trim() || !content.trim()) {
       alert('⚠️ 제목과 내용을 모두 입력하세요!');
@@ -34,7 +34,7 @@ export default function BoardEdit() {
     }
 
     const updatedBoard = { title, content, writer };
-    setLoading(true);
+    setLoading(true);   //버튼 중복 방지
 
     axios.put(`http://localhost:8080/cal/board/update/${id}`, updatedBoard)
       .then(() => {
@@ -52,10 +52,10 @@ export default function BoardEdit() {
     <div className={styles.container}>
       <h2>게시글 수정</h2>
       {loading && <p>수정 중...</p>}
-      {message && <p>{message}</p>}
 
       <label>제목:
-        <input value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} // 내용 저장
+         /> 
       </label>
       <br />
 
