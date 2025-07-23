@@ -23,7 +23,7 @@ function BoardList() {
 
     const handleDelete = (id) => {
         if (window.confirm(`${id}번 게시글을 삭제하시겠습니까?`)) {
-            axios.delete(`http://localhost:8080/cal/board/delete/${id}`)
+            axios.delete(`http://localhost:8080/cal/board/delete1/${id}`)
                 .then(() => {
                     alert("삭제 성공!");
                     fetchBoards();

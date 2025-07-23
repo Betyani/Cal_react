@@ -3,8 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './BoardEdit.module.css';
 
-export default function BoardEdit() {
-  const { id } = useParams();
+export default function BoardEdit({ id }) {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
