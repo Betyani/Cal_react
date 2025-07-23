@@ -5,7 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import BoardDetail from './components/board/BoardDetail';
 import BoardForm from './components/board/BoardForm';
-import BoardList from './components/Board/BoardList';
+import BoardList from './components/board/BoardList';
 import ProductDelete from './components/ProductDelete/ProductDelete';
 import ProductDetail from './components/ProductDetail/ProductDetail';
 import ProductForm from './components/ProductForm/ProductForm';
