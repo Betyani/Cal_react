@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Login({ onLoginSuccess }) {
   const [form, setForm] = useState({ id: '', pw: '' });
-  const navigate = useNavigate();
+  const navigate = useNavigate();                              //페
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +27,11 @@ export default function Login({ onLoginSuccess }) {
    if (response.status === 200) {
       localStorage.setItem('loggedInUser', form.id);  // ✅ 성공 시만 저장
       alert('로그인 성공');
+
+   if (onLoginSuccess) {
+    onLoginSuccess(); // 👈 여기서 부모에게 알려주는 역할
+     }
+
       navigate('/');
     } else {
       alert('로그인 실패');

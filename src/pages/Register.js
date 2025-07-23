@@ -19,7 +19,7 @@ export default function Register() {
     setForm({ ...form, [name]: value });
   };
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e) => {                                 //회원가임 버튼 실행
     e.preventDefault();
     try {
       await axios.put('http://localhost:8080/cal/member/register', {
