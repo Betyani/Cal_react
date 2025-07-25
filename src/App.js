@@ -5,7 +5,7 @@ import BoardList from './components/board/boardList/BoardList';
 import BoardDetail from './components/board/BoardDetail';
 import BoardForm from './components/board/BoardForm';
 import BoardRegister from  './components/board/BoardRegister'
-import BoardList1 from './components/board/boardList/BoardList1';
+
 
 function App() {
   return (

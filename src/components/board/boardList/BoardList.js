@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Link 대신 useNavigate으로 변경했습니다
 import './BoardList.css';
+import BoardItemRow from './BoardItemRow';
 
 function BoardList() {
     const [boards, setBoards] = useState([]);
@@ -62,31 +63,18 @@ function BoardList() {
                 <tbody>
                     {Array.isArray(boards) && boards.length > 0 ? (
                         boards.map(board => (
-                            <tr key={board.id}>
-                                <td>{board.id}</td>
-                                <td>
-                                    <button
-                                        onClick={() => handleGoToDetail(board.id)}
-                                        style={{
-                                            all: 'unset',
-                                            cursor: 'pointer',
-                                            color: 'blue',
-                                            textDecoration: 'underline',
-                                        }}
-                                    >
-                                        {board.title}
-                                    </button>
-                                </td>
-                                <td>{board.writer}</td>
-                                <td>{JSON.stringify(board.createTime)}</td>
-                                <td>
-                                    <button onClick={() => handleDelete(board.id)}>삭제</button>
-                                </td>
-                            </tr>
+                            <BoardItemRow
+                                key={board.id}
+                                board={board}
+                                onDeleteSuccess={fetchBoards}
+                                onDetail={handleGoToDetail}
+                            />
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5" style={{ textAlign: 'center' }}>게시글이 없습니다.</td>
+                            <td colSpan="5" style={{ textAlign: 'center' }}>
+                                게시글이 없습니다.
+                            </td>
                         </tr>
                     )}
                 </tbody>
