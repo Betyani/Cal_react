@@ -14,9 +14,7 @@
   cursor: pointer;
 }
 
-
-
-.active {
+.tabButton.active {
   background: #333;
   color: white;
   font-weight: bold;
@@ -28,18 +26,9 @@
   margin-bottom: 20px;
 }
 
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  list-style: none;
-  padding: 0;
-}
-
 .sortContainer {
   margin: 10px 0;
 }
-
 
 .sortButton {
   margin-right: 10px;
@@ -55,8 +44,27 @@
   background-color: #e0e0e0;
 }
 
-.active {
+.sortButton.active {
   background-color: #007bff;
   color: white;
   border-color: #007bff;
+}
+
+
+
+/* ✅ 페이지네이션 전용 스타일 */
+.pageButton {
+  background-color: white;
+  color: black;
+  border: 1px solid gray;
+  padding: 6px 10px;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+.activePageButton {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  font-weight: bold;
 }

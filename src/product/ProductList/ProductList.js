@@ -8,9 +8,13 @@ export default function ProductList() {
   const [total, setTotal] = useState(0);                       // 전체 상품 개수
   const [keyword, setKeyword] = useState('');                  // 검색바
   const [category, setCategory] = useState('');                // 카테고리
-  const categories =  ["전체", "도시락/조리면", "삼각김밥/김밥", "샌드위치/햄버거", "음료수/아이스크림", "과자/디저트", "기타"];
   const [sort, setSort] = useState('new');
+ 
   const navigate = useNavigate();
+  const categories =  ["전체", "도시락/조리면", "삼각김밥/김밥", "샌드위치/햄버거", "음료수/아이스크림", "과자/디저트", "기타"];
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;         // 한 페이지당 상품 수
+  const blockSize = 5;        // 한 블럭당 페이지 수
 
   useEffect(() => {
 
@@ -18,8 +22,8 @@ export default function ProductList() {
       params: {
         keyword: keyword,     // 검색어
         category: category === "전체" ? "" : category, // "전체"는 빈 값으로 전달
-        page: 1,         // 페이지 번호 (1부터 시작)
-        size: 8,          // 한 페이지에 불러올 상품 수
+         page: currentPage - 1,         // Spring은 0부터 시작임 헥갈리니깐 적어둠
+        size: pageSize,
         sort: sort,
 
       }
@@ -32,9 +36,10 @@ export default function ProductList() {
       .catch((err) => {
         console.error("상품 조회 실패:", err);
       });
-  }, [keyword, category, sort, navigate]);     // 검색어가 바뀔 때마다 자동 요청하게 괄호안에 있는것들을 넣음
+  }, [keyword, category, sort,  currentPage]);     // 검색어가 바뀔 때마다 자동 요청하게 괄호안에 있는것들을 넣음
 
 
+  
 
   const handleDelete = (id) => {
   if (!window.confirm("정말 삭제하시겠습니까?")) return;
@@ -49,6 +54,10 @@ export default function ProductList() {
       console.error(err);
     });
 };  
+  const totalPages = Math.ceil(total / pageSize);
+  const currentBlock = Math.floor((currentPage - 1) / blockSize);
+  const startPage = currentBlock * blockSize + 1;
+  const endPage = Math.min(startPage + blockSize - 1, totalPages);
 
 
   return (
@@ -100,37 +109,51 @@ export default function ProductList() {
 
    
       <h2>상품 목록 ({total}개)</h2>
-      <ul className={styles.listWrap}>
-        {products.length > 0 ? (
-          products.map((p) => (             //map해서 상품 배열 하나씩 렌더링(p)
+      <div className={styles.listWrap}>
+  {products.length > 0 ? (
+    products.map((p) => (             //map해서 상품 배열 하나씩 렌더링(p)
             <div
              key={p.id} className={styles.productItem}>
-              <li onClick={() => navigate(`/${p.id}`)} style={{ cursor: 'pointer' }}> 
                 <strong>{p.name}</strong> - {p.price}원
                 <br />
                 <span>{p.category}</span>
                 <br />
                 <img src={p.imageUrl} alt={p.name} width="100" height="100" />
-              </li>
-              <div className={styles.buttonWrap}>
+                <div className={styles.buttonWrap}>
                 {/* 수정 버튼  은비님 구현한 페이지로 이동 */}
                 <button onClick={() => navigate(`/product/edit/${p.id}`)}>수정</button>   
                 {/* 삭제버튼 지원님 API 호출 */}
                 <button onClick={() => handleDelete(p.id)}>삭제</button>
               </div>
-              
             </div>
-
           ))
         ) : (
           <p>상품이 없습니다.</p>
         )}
-      </ul>
+      </div>
 
-
+      {/* ✅ 페이징 블럭 */}
+      <div className={styles.pagination}>
+        {startPage > 1 && (
+          <button onClick={() => setCurrentPage(startPage - 1)} className={styles.pageButton}>
+            ◀ 이전
+          </button>
+        )}
+        {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map(num => (
+          <button
+            key={num}
+            onClick={() => setCurrentPage(num)}
+            className={currentPage === num ? styles.activePageButton : styles.pageButton}
+          >
+            {num}
+          </button>
+        ))}
+        {endPage < totalPages && (
+          <button onClick={() => setCurrentPage(endPage + 1)} className={styles.pageButton}>
+            다음 ▶
+          </button>
+        )}
+      </div>
     </div>
-
-
-
   );
 }
