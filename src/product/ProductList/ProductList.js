@@ -22,7 +22,7 @@ export default function ProductList() {
       params: {
         keyword: keyword,     // 검색어
         category: category === "전체" ? "" : category, // "전체"는 빈 값으로 전달
-         page: currentPage - 1,         // Spring은 0부터 시작임 헥갈리니깐 적어둠
+         page: currentPage ,
         size: pageSize,
         sort: sort,
 
