@@ -8,7 +8,7 @@ export default function ProductList() {
   const [total, setTotal] = useState(0);                       // 전체 상품 개수
   const [keyword, setKeyword] = useState('');                  // 검색바
   const [category, setCategory] = useState('');                // 카테고리
-  const categories = ["전체", "도시락", "음료수", "과자", "아이스크림"];
+  const categories =  ["전체", "도시락/조리면", "삼각김밥/김밥", "샌드위치/햄버거", "음료수/아이스크림", "과자/디저트", "기타"];
   const [sort, setSort] = useState('new');
   const navigate = useNavigate();
 
@@ -33,6 +33,22 @@ export default function ProductList() {
         console.error("상품 조회 실패:", err);
       });
   }, [keyword, category, sort, navigate]);     // 검색어가 바뀔 때마다 자동 요청하게 괄호안에 있는것들을 넣음
+
+
+
+  const handleDelete = (id) => {
+  if (!window.confirm("정말 삭제하시겠습니까?")) return;
+
+  axios.delete(`http://localhost:8080/cal/product/delete/${id}`)
+    .then(() => {
+      alert("✅ 삭제 완료");
+      setProducts(products.filter(p => p.id !== id)); // 목록에서 바로 제거
+    })
+    .catch(err => {
+      alert("❌ 삭제 실패");
+      console.error(err);
+    });
+};  
 
 
   return (
@@ -83,22 +99,28 @@ export default function ProductList() {
 /*<button onClick={() => navigate('/products/new')}>상품 등록</button>*/}
 
    
-
       <h2>상품 목록 ({total}개)</h2>
-      <ul>
-        {Array.isArray(products) && products.length > 0 ? (
-          products.map((p) => (
-            <li
-              key={p.id}
-              onClick={() => navigate(`/${p.id}`)}
-              style={{ cursor: 'pointer' }}
-            >
-              <strong>{p.name}</strong> - {p.price}원
-              <br />
-              <span>{p.category}</span>
-              <br />
-              <img src={p.imageUrl} alt={p.name} width="100" height="100" />
-            </li>
+      <ul className={styles.listWrap}>
+        {products.length > 0 ? (
+          products.map((p) => (             //map해서 상품 배열 하나씩 렌더링(p)
+            <div
+             key={p.id} className={styles.productItem}>
+              <li onClick={() => navigate(`/${p.id}`)} style={{ cursor: 'pointer' }}> 
+                <strong>{p.name}</strong> - {p.price}원
+                <br />
+                <span>{p.category}</span>
+                <br />
+                <img src={p.imageUrl} alt={p.name} width="100" height="100" />
+              </li>
+              <div className={styles.buttonWrap}>
+                {/* 수정 버튼  은비님 구현한 페이지로 이동 */}
+                <button onClick={() => navigate(`/product/edit/${p.id}`)}>수정</button>   
+                {/* 삭제버튼 지원님 API 호출 */}
+                <button onClick={() => handleDelete(p.id)}>삭제</button>
+              </div>
+              
+            </div>
+
           ))
         ) : (
           <p>상품이 없습니다.</p>

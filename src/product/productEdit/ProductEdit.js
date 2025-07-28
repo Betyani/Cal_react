@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-function ProductEdit({ productId }) {
+function ProductEdit() {
+  const {productId} = useParams();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
@@ -75,6 +77,7 @@ function ProductEdit({ productId }) {
       <label>
         카테고리:
         <input value={category} onChange={(e) => setCategory(e.target.value)} />
+        
       </label>
       <br />
 
