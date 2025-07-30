@@ -13,7 +13,7 @@ function ProductEdit() {
   // 상품 정보 불러오기 (GET)
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/cal/product/test/${productId}`)
+      .get(`http://localhost:8080/cal/product/check/${productId}`)
       .then((res) => {
         const data = res.data;
         setName(data.name);
