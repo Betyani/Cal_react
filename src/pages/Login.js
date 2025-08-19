@@ -45,31 +45,61 @@ export default function Login({ onLoginSuccess }) {
 };
 
   return (
-    <div style={{ maxWidth: 400, margin: '0 auto', padding: 20 }}>
-      <h2>로그인</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>아이디:</label>
-          <input
-            type="text"
-            name="id"
-            value={form.id}
-            onChange={handleChange}
-            required
-          />
+     <div className={account.wrap}>
+          <div className={account.card}>
+            <h2 className={account.title}>로그인</h2>
+            <form onSubmit={handleLogin} className={account.form}>
+              <div className={account.formRow}>
+                <label className={account.label}>아이디</label>
+                <input
+                  type="text"
+                  name="id"
+                  value={form.id}
+                  onChange={handleChange}
+                  required
+                  className={account.input}
+                   placeholder="아이디"
+                />
+              </div>
+              <div className={account.formRow}>
+                <label className={account.label}>비밀번호</label>
+                <input
+                  type="password"
+                  name="pw"
+                  value={form.pw}
+                  onChange={handleChange}
+                  required
+                  className={account.input}
+                  placeholder="비밀번호"
+                />
+              </div>
+              <button type="submit" className={account.button}>
+                로그인
+              </button>
+            </form>
+          
+          
+          
+          {/* 👇 추가: 아이디/비번 찾기 하단 액션 */}
+            <div className={account.subActions}>
+              <button
+                type="button"
+                className={account.ghostButton}
+                onClick={() => navigate('/find-id')}
+              >
+                아이디 찾기
+              </button>
+              <span className={account.divider} />
+              <button
+                type="button"
+                className={account.ghostButton}
+                onClick={() => navigate('/find-password')}
+              >
+                비밀번호 찾기
+              </button>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>비밀번호:</label>
-          <input
-            type="password"
-            name="pw"
-            value={form.pw}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">로그인</button>
-      </form>
-    </div>
-  );
-}
+      );
+    }
+    

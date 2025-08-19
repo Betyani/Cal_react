@@ -5,15 +5,24 @@ import './Header.css';  // 별도 스타일 파일로 분리 추천
 
 export default function Header() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userId, setUserId] = useState('');
+  const [nickname, setNickname] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  
 
   // 로그인 상태 초기화
-  useEffect(() => {
-    const savedUser = localStorage.getItem('loggedInUser');
-    setLoggedIn(!!savedUser);
-    setUserId(savedUser || '');
+   useEffect(() => {
+    axios.get("http://localhost:8080/cal/member/status", { withCredentials: true  })
+      .then(res => {
+       console.log("서버 확인값:", res.data);
+        const name = res.data.replace('현재 로그인한 사용자: ', '');
+        setNickname(name);
+        setLoggedIn(true);
+      })
+      .catch(() => {
+        setNickname('');
+        setLoggedIn(false);
+      });
   }, [location]);  // location 변화에 반응 → 로그인/로그아웃 직후에도 상태 업데이트
 
   // 로그아웃 핸들러
@@ -24,7 +33,6 @@ export default function Header() {
       });
       localStorage.removeItem('loggedInUser');
       setLoggedIn(false);
-      setUserId('');
       navigate('/');
       alert('로그아웃 완료');
     } catch (err) {
@@ -38,15 +46,16 @@ export default function Header() {
       <nav className="nav">
         <div className="nav-left">
           <Link to="/" className="nav-link">Home</Link>
-          <Link to="/register" className="nav-link">회원가입</Link>
+           {!loggedIn &&<Link to="/register" className="nav-link">회원가입</Link>}
           {!loggedIn && <Link to="/login" className="nav-link">로그인</Link>}
         </div>
-        {loggedIn && (
-          <div className="nav-right">
-            <span className="user-info">환영합니다, {userId}</span>
-            <button onClick={handleLogout} className="logout-button">로그아웃</button>
-          </div>
-        )}
+
+        {loggedIn && (<div className="nav-right">
+          <span className="user-info">{nickname}님 환영합니다</span>
+          <button onClick={() => navigate('/profile/edit')} className="nav-button info">정보수정</button>
+          <button onClick={handleLogout} className="nav-button logout">로그아웃</button>
+  </div>
+)}
       </nav>
     </header>
   );

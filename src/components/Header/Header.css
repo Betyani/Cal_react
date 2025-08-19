@@ -1,16 +1,18 @@
-/* src/components/Header.css */
+/*  전체 헤더 영역 */
 .header {
   background-color: #f8f8f8;
   padding: 10px 20px;
   border-bottom: 1px solid #ddd;
 }
 
+/*  nav: 헤더 안의 좌우 메뉴 정렬 */
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* 좌측 메뉴 링크 (Home, 회원가입, 로그인) */
 .nav-left .nav-link {
   margin-right: 10px;
   text-decoration: none;
@@ -21,16 +23,43 @@
   text-decoration: underline;
 }
 
+/* 우측 메뉴 영역 (닉네임, 정보수정, 로그아웃 버튼) */
 .nav-right {
   display: flex;
   align-items: center;
 }
 
+/* 닉네임 환영합니다 영역 */
 .user-info {
   margin-right: 10px;
+  font-weight: bold;
 }
 
-.logout-button {
-  padding: 5px 10px;
+/* 공통 버튼 스타일: 정보수정, 로그아웃 모두 여기서 설정 */
+.nav-button {
+  margin-left: 19px;
+  padding: 7px 10px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+  background-color: transparent;
+}
+
+/* 정보수정 버튼 전용 (회색 톤) */
+.nav-button.info {
+  color: #007bff;
+}
+
+.nav-button.info:hover {
+  background-color: #e0f0ff;
+}
+
+/* 로그아웃 버튼 전용 (빨간 톤) */
+.nav-button.logout {
+  color: red;
+}
+
+.nav-button.logout:hover {
+  background-color: #ffe5e5;
 }
