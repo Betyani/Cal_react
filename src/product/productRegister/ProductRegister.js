@@ -55,7 +55,7 @@ export default function ProductRegister() {
     //입력값 실시간 반영
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProduct({ ...product, [name]: value });  //입력값만 덮어쓰기
+        setProduct(prev => ({ ...prev, [name]: value }));  //입력값만 덮어쓰기
     }
 
     const handleFileChange = (e) => {
@@ -97,7 +97,15 @@ export default function ProductRegister() {
                 </div>
                 <div>
                     <label>카테고리: </label>
-                    <input type="text" name="category" value={product.category} onChange={handleChange} required />
+                    <select id="categorySelect" name="category" value={product.category} onChange={handleChange}>
+                        <option value="">카테고리를 선택하세요</option>
+                        <option value="도시락/조리면">도시락/조리면</option>
+                        <option value="삼각김밥/김밥">삼각김밥/김밥</option>
+                        <option value="샌드위치/햄버거">샌드위치/햄버거</option>
+                        <option value="음료수/아이스크림">음료수/아이스크림</option>
+                        <option value="과자/디저트">과자/디저트</option>
+                        <option value="기타">기타</option>
+                    </select>
                 </div>
                 <div>
                     <input type="file" onChange={handleFileChange} />
