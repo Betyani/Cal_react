@@ -3,6 +3,10 @@ import './App.css';
 import Header from './components/Header/Header';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ProfileEdit from './pages/ProfileEdit';
+import FindId from './pages/FindId';
+import FindPassword from './pages/FindPassword';
+
 
 // 1차
 import ProductList from './product/productList/ProductList';
@@ -14,7 +18,7 @@ import ProductEdit from './product/productEdit/ProductEdit';
 import BoardList from './components/board/boardList/BoardList';
 import BoardDetail from './components/board/boardDetail/BoardDetail';
 import BoardEdit from './components/board/boardEdit/BoardEdit';
-import Home from './components/Home/Home';// 접속시 나오는 홈페이지; 이러면 관리가 명확해진하여 도전해봤습니다.
+import Frame from './components/Home/Frame';
 
 function App() {
   return (
@@ -23,12 +27,16 @@ function App() {
       <div className="App">
         <Routes>
           {/* 홈 */}
-          <Route path="/" element={<Home />} />{/* 여기를 Home으로 바꿈 */}
+          <Route path="/" element={<Frame />} />{/* 여기를 Home으로 바꿈 */}
 
 
           {/* 회원 */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path='/profile/edit' element={<ProfileEdit />} />
+          <Route path='/find-id' element={<FindId />} />
+          <Route path='/find-password' element={<FindPassword />} />
+          
 
           {/* 상품 */}
          

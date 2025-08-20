@@ -1,85 +1,85 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Link 대신 useNavigate으로 변경했습니다
-import './BoardList.css';
-import BoardItemRow from './BoardItemRow';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-function BoardList() {
-    const [boards, setBoards] = useState([]);
-    const navigate = useNavigate();
+export default function BoardList({ productId }) {
+    const [review, setReview] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageInfo, setPageInfo] = useState({});
 
     useEffect(() => {
-        fetchBoards();
-    }, []);
+        const search = async () => {
+            try {
+                console.log("상품id: ", productId);
+                const response = await axios.get("http://localhost:8080/cal/board/list",
+                    {
+                        params:
+                        {
+                            productId: productId,
+                            page: page
+                        }
+                    });
+                setReview(response.data.reviews);
+                setPageInfo(response.data.pageInfo);
+                console.log("불러온 리뷰: ", response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
-    const fetchBoards = () => {
-        axios.get('http://localhost:8080/cal/board/list')
-            .then(response => {
-                setBoards(response.data);
-            })
-            .catch(error => {
-                console.error("목록 가져오기 실패:", error);
-            });
-    };
+        search();
 
-    const handleDelete = (id) => {
-        if (window.confirm(`${id}번 게시글을 삭제하시겠습니까?`)) {
-            axios.delete(`http://localhost:8080/cal/board/delete1/${id}`)
-                .then(() => {
-                    alert("삭제 성공!");
-                    fetchBoards();
-                })
-                .catch(error => {
-                    console.error("삭제 실패:", error);
-                    alert("삭제 실패");
-                });
-        }
-    };
+    }, [productId, page]);
 
-    const handleGoToForm = () => {
-        navigate("/board/form");
-    };
 
-    const handleGoToDetail = (id) => {
-        navigate(`/board/detail/${id}`);
-    };
+    useEffect(() => {
+        setPage(1); // 상품이 바뀌면 페이지를 1로 초기화
+    }, [productId]);
+
+
+    const goToPage = (pageNum) => {
+        setPage(pageNum);
+    }
 
     return (
-        <div className="board-list-container">
-            <h2>게시판 목록</h2>
-            <button className="board-list-button" onClick={handleGoToForm}>
-                게시글 작성
-            </button>
-            <table className="board-list-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>작성일</th>
-                        <th>삭제</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Array.isArray(boards) && boards.length > 0 ? (
-                        boards.map(board => (
-                            <BoardItemRow
-                                key={board.id}
-                                board={board}
-                                onDeleteSuccess={fetchBoards}
-                                onDetail={handleGoToDetail}
-                            />
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="5" style={{ textAlign: 'center' }}>
-                                게시글이 없습니다.
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
+        <>
+            <h2>리뷰 목록</h2>
+            {review.map((review, index) => (
+                <div key={index}>
+                    <p>제목: {review.title}</p>
+                    <p>내용: {review.content}</p>
+                    <p>작성자: {review.writer}</p>
+                    <p>작성시간: {review.createTime} </p>
+                    <hr />
+                </div>
+            ))}
+
+            <div>
+                {pageInfo.hasPrev && (
+                    <button onClick={() => goToPage(pageInfo.startPage - 1)}>
+                        ◀ 이전
+                    </button>
+                )}
+
+                {Array.from({ length: pageInfo.endPage - pageInfo.startPage + 1 }, (_, index) => {
+                    const pageNum = pageInfo.startPage + index;
+                    return (
+                        <button key={ pageNum } onClick={() => goToPage(pageNum)} >
+                            [{ pageNum }]
+                        </button>);
+                })}
+
+                {pageInfo.hasNext && (
+                    <button onClick={() => goToPage(pageInfo.endPage + 1)}>
+                        다음▶
+                    </button>
+                )}
+
+            </div>
+        </>
     );
+
+
+
+
+
 }
-export default BoardList;

@@ -1,39 +1,27 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import './ProductDelete.css';
+import React, { useEffect } from "react";
+import axios from "axios";
 
-function ProductDelete() {
-    const [id, setId] = useState("");
+export default function ProductDelete({ id }) {
 
-    const handleDelete = () => {
-        if (!id) {
-            alert("삭제할 ID를 입력해주세요.");
-            return;
-        }
+    useEffect(() => {
+        if (!id) return;
 
-        axios.delete(`http://localhost:8080/cal/product/delete/${id}`)
-            .then(response => {
-                alert(`상품 ID ${id} 삭제 성공!`);
-                console.log("삭제 성공:", response);
-            })
-            .catch(error => {
-                alert(`삭제 실패: ${error}`);
-                console.error("삭제 실패:", error);
-            });
-    };
+        const connect = async () => {
+            try {
+                const response = await axios.delete("http://localhost:8080/cal/product/delete", 
+                {
+                    params: { id }
+                });
+                console.log("삭제 성공");
+            } catch (error) {
+                console.log("실패", error);
+            }
+        };
 
-    return (
-        <div className="delete-container">
-            <h2>상품 삭제</h2>
-            <input
-                type="number"
-                placeholder="삭제할 상품 ID"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-            />
-            <button onClick={handleDelete}>삭제하기</button>
-        </div>
-    );
+        connect();
+
+    }, [id]);
+
+    return null;
+
 }
-
-export default ProductDelete;
