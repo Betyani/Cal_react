@@ -49,13 +49,13 @@ function ProductEdit() {
       return;
     }
 
-    // 1) 파일 타입 검증 (이미지 파일만 허용)
-    if (!newFile.type.startsWith("image/")) {
-      alert("❌ 이미지 파일만 업로드 가능합니다.");
+    // 1) 파일 타입 검증 (이미지 파일 JPG, PNG, GIF만 허용)
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(newFile.type)) {
+      alert("❌ JPG, PNG, GIF 형식만 업로드 가능합니다.");
       e.target.value = ""; // input 초기화
       return;
     }
-
     // 2) 파일 용량 제한 (2MB 이하 예시)
     if (newFile.size > 2 * 1024 * 1024) {
       alert("❌ 파일 크기는 2MB 이하만 가능합니다.");
@@ -127,7 +127,7 @@ function ProductEdit() {
       <div>
         <label>가격:</label>
         <input
-          type="number"
+          type="text"
           name="price"
           value={product.price}
           onChange={handleChange}
@@ -157,9 +157,9 @@ function ProductEdit() {
       {/* 👉 파일 선택 제한 (accept) 추가 */}
       <div>
         <label>새 이미지 선택:</label>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+        <input type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
       </div>
-     
+
       {/* 👉 미리보기 or 기존 이미지 표시 */}
       <div>
         {previewUrl ? (
