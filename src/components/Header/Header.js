@@ -8,13 +8,13 @@ export default function Header() {
   const [nickname, setNickname] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  
+
 
   // 로그인 상태 초기화
-   useEffect(() => {
-    axios.get("http://localhost:8080/cal/member/status", { withCredentials: true  })
+  useEffect(() => {
+    axios.get("http://localhost:8080/cal/member/status", { withCredentials: true })
       .then(res => {
-       console.log("서버 확인값:", res.data);
+        console.log("서버 확인값:", res.data);
         const name = res.data.replace('현재 로그인한 사용자: ', '');
         setNickname(name);
         setLoggedIn(true);
@@ -45,17 +45,18 @@ export default function Header() {
     <header className="header">
       <nav className="nav">
         <div className="nav-left">
-          <Link to="/" className="nav-link">Home</Link>
-           {!loggedIn &&<Link to="/register" className="nav-link">회원가입</Link>}
-          {!loggedIn && <Link to="/login" className="nav-link">로그인</Link>}
+          <Link to="/" className="nav-link nav-button">Home</Link>
         </div>
-
+        <div className="nav-right">
+          {!loggedIn && <Link to="/register" className="nav-link nav-button">회원가입</Link>}
+          {!loggedIn && <Link to="/login" className="nav-link nav-button">로그인</Link>}
+        </div>
         {loggedIn && (<div className="nav-right">
           <span className="user-info">{nickname}님 환영합니다</span>
           <button onClick={() => navigate('/profile/edit')} className="nav-button info">정보수정</button>
           <button onClick={handleLogout} className="nav-button logout">로그아웃</button>
-  </div>
-)}
+        </div>
+        )}
       </nav>
     </header>
   );

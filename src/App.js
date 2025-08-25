@@ -18,6 +18,7 @@ import ProductEdit from './product/productEdit/ProductEdit';
 import BoardList from './components/board/boardList/BoardList';
 import BoardDetail from './components/board/boardDetail/BoardDetail';
 import BoardEdit from './components/board/boardEdit/BoardEdit';
+import BoardRegister from './components/board/boardRegister/BoardRegister';
 import Frame from './components/Home/Frame';
 
 function App() {
@@ -42,14 +43,16 @@ function App() {
          
           <Route path="/products/list" element={<ProductList />} />
           <Route path="/products/new" element={<ProductRegister />} />
-          <Route path="/products/delete" element={<ProductDelete />} />
+          <Route path="/product/delete/:id" element={<ProductDelete />} />
           <Route path="/product/edit/:productId" element={<ProductEdit />} />
+          <Route path="/product/register" element={<ProductRegister />} />
     
 
           {/* 게시판 */}
           <Route path="/board/list" element={<BoardList />} />
           <Route path="/board/detail/:id" element={<BoardDetail />} />
           <Route path="/board/edit/:id" element={<BoardEdit />} />
+          <Route path="/board/register/:productId" element={<BoardRegister />} />
         </Routes>
       
       {/* /board/list 를 디폴트로 하는거 */}

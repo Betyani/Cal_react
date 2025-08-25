@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ProductList.module.css';
 
-export default function ProductList() {
+export default function ProductList( {onSelect} ) {
   const [products, setProducts] = useState([]);                // 상품 목록 (배열 형태)
   const [total, setTotal] = useState(0);                       // 전체 상품 개수
   const [keyword, setKeyword] = useState('');                  // 검색바
@@ -38,22 +38,6 @@ export default function ProductList() {
       });
   }, [keyword, category, sort, currentPage]);     // 검색어가 바뀔 때마다 자동 요청하게 괄호안에 있는것들을 넣음
 
-
-
-
-  const handleDelete = (id) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
-    axios.delete(`http://localhost:8080/cal/product/delete/${id}`)
-      .then(() => {
-        alert("✅ 삭제 완료");
-        setProducts(products.filter(p => p.id !== id)); // 목록에서 바로 제거
-      })
-      .catch(err => {
-        alert("❌ 삭제 실패");
-        console.error(err);
-      });
-  };
   const totalPages = Math.ceil(total / pageSize);
   const currentBlock = Math.floor((currentPage - 1) / blockSize);
   const startPage = currentBlock * blockSize + 1;
@@ -62,8 +46,6 @@ export default function ProductList() {
 
   return (
     <div className={styles.container}>
-
-
       {/* 카테고리 탭 */}
       <div className={styles.tabs}>
         {categories.map((cat) => (
@@ -87,17 +69,17 @@ export default function ProductList() {
         />
       </div>
       {/* 정렬순 버튼 */}
-      <div className={styles.sortContainer}>
+      <div className={`${styles.container} ${styles.tabs}`}>
         <button
-          className={`${styles.sortButton} ${sort === 'new' ? styles.active : ''}`}
+          className={`${styles.tabButton} ${sort === 'new' ? styles.active : ''}`}
           onClick={() => setSort('new')}>
-          최근껄로 드가자</button>
+          최신순</button>
         <button
-          className={`${styles.sortButton} ${sort === 'old' ? styles.active : ''}`}
+          className={`${styles.tabButton} ${sort === 'old' ? styles.active : ''}`}
           onClick={() => setSort('old')}>
           오래된순</button>
         <button
-          className={`${styles.sortButton} ${sort === 'recommend' ? styles.active : ''}`}
+          className={`${styles.tabButton} ${sort === 'recommend' ? styles.active : ''}`}
           onClick={() => setSort('recommend')}>
           추천순</button>
       </div>
@@ -107,29 +89,38 @@ export default function ProductList() {
 조회쪽에서 만든 상품 등록 미완성 혹시 몰라 놔두는거예요  */
 /*<button onClick={() => navigate('/products/new')}>상품 등록</button>*/}
 
-
+      <div className={styles.product}>
       <h2>상품 목록 ({total}개)</h2>
+      <button className={styles.btn} onClick={() => navigate(`/product/register`)}> + 상품등록</button>
+      </div>
+
       <div className={styles.listWrap}>
         {products.length > 0 ? (
           products.map((p) => (             //map해서 상품 배열 하나씩 렌더링(p)
-            <div
-              key={p.id} className={styles.productItem}>
-              <strong>{p.name}</strong> - {p.price}원
-              <br />
-              <span>{p.category}</span>
-              <br />
-              <img
-                src={`http://localhost:8080/cal/image/load/${p.imageUrl}`}
-                alt={p.name}
-                width="200"
-              />
-              <div className={styles.buttonWrap}>
-                {/* 수정 버튼  은비님 구현한 페이지로 이동 */}
-                <button onClick={() => navigate(`/product/edit/${p.id}`)}>수정</button>
-                {/* 삭제버튼 지원님 API 호출 */}
-                <button onClick={() => handleDelete(p.id)}>삭제</button>
+            <article
+              key={p.id} className={styles.card} onClick={() => onSelect?.({id: p.id, name: p.name})}>
+              {p.imageUrl ? (
+                <img
+                  className={styles.thumb}
+                  src={`http://localhost:8080/cal/image/load/${p.imageUrl}`}
+                  alt={p.name}
+                />) : (<div className={`${styles.thumb} ${styles['thumb--placeholder']}`} />)}
+              <h3 className={styles.name}>{p.name}</h3>
+              <div className={styles.meta}>
+                <span className={styles.price}>
+                  {Number(p.price).toLocaleString()}원
+                </span>
+                <span className={styles.category}>{p.category}</span>
               </div>
-            </div>
+              <div className={styles.buttonWrap}>
+                <button className={`${styles.btn} ${styles.primary}`} onClick={(e) => {e.stopPropagation(); navigate(`/board/register/${p.id}`);}}>리뷰 쓰기</button>
+                {/* 수정 버튼 */}
+                <button className={`${styles.btn} ${styles.outline}`} onClick={(e) => {e.stopPropagation(); navigate(`/product/edit/${p.id}`);}}>수정</button>
+                {/* 삭제버튼*/}
+                <button className={`${styles.btn} ${styles.danger}`} onClick={(e) => {e.stopPropagation(); navigate(`/product/delete/${p.id}`);}}>삭제</button>
+
+              </div>
+            </article>
           ))
         ) : (
           <p>상품이 없습니다.</p>
@@ -139,7 +130,7 @@ export default function ProductList() {
       {/* ✅ 페이징 블럭 */}
       <div className={styles.pagination}>
         {startPage > 1 && (
-          <button onClick={() => setCurrentPage(startPage - 1)} className={styles.pageButton}>
+          <button className={`${styles.page} ${styles.prev}`} onClick={() => setCurrentPage(startPage - 1)}>
             ◀ 이전
           </button>
         )}
@@ -147,13 +138,13 @@ export default function ProductList() {
           <button
             key={num}
             onClick={() => setCurrentPage(num)}
-            className={currentPage === num ? styles.activePageButton : styles.pageButton}
+            className={`${styles.page} ${styles.prev}`}
           >
             {num}
           </button>
         ))}
         {endPage < totalPages && (
-          <button onClick={() => setCurrentPage(endPage + 1)} className={styles.pageButton}>
+          <button className={`${styles.page} ${styles.prev}`} onClick={() => setCurrentPage(endPage + 1)}>
             다음 ▶
           </button>
         )}

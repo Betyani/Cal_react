@@ -1,24 +1,14 @@
 :root {
-    --bg: #faf2f2;
-    /* 포근한 오프화이트 */
+    --bg: #ffffff;
     --panel: #ffffff;
-    /* 카드 배경(미세한 크림톤) */
-    --ink: #222;
-    /* 본문 글자색 */
-    --ink-dim: #666;
-    /* 보조 텍스트 */
-    --line: #e7e2da;
-    /* 부드러운 경계선 */
-    --brand: #2a7f6f;
-    /* 포인트(딥민트) */
-    --brand-weak: #bfe2da;
-    /* 포인트 약색(호버) */
-    --container: 1100px;
-    /* 가운데 컨테이너 폭 */
-    --radius: 14px;
-    /* 라운드 */
+    --ink: #222; /* 본문 글자색 */
+    --ink-dim: #666; /* 보조 텍스트 */
+    --line: #e7e2da; /* 부드러운 경계선 */
+    --brand: #2a7f6f; /* 포인트(딥민트) */
+    --brand-weak: #bfe2da; /* 포인트 약색(호버) */
+    --container: 1100px; /* 가운데 컨테이너 폭 */
+    --radius: 14px; /* 라운드 */
     --shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-
 }
 
 * {

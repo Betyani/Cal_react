@@ -14,6 +14,7 @@
 
 /* 좌측 메뉴 링크 (Home, 회원가입, 로그인) */
 .nav-left .nav-link {
+  display: flex;
   margin-right: 10px;
   text-decoration: none;
   color: #333;
@@ -26,6 +27,7 @@
 /* 우측 메뉴 영역 (닉네임, 정보수정, 로그아웃 버튼) */
 .nav-right {
   display: flex;
+  margin-left: auto;
   align-items: center;
 }
 

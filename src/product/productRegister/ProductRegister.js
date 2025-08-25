@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ProductRegister() {
@@ -12,7 +13,7 @@ export default function ProductRegister() {
 
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState("");
-
+    const navigate = useNavigate();
     //등록버튼을 눌렀을 경우 실행
     const handleSubmit = async (e) => {
         e.preventDefault(); //제출 시 페이지 새로고침 방지
@@ -46,6 +47,9 @@ export default function ProductRegister() {
             }
             setPreviewUrl("");
             console.log("등록 성공");
+            alert("등록 성공");
+            navigate("/", { replace: true });
+        
         } catch (error) {
             console.error('오류남: ', error);
             alert("등록 실패");

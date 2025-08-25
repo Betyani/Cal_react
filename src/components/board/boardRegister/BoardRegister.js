@@ -1,25 +1,29 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export default function BoardRegister({ productId }) {
-
+export default function BoardRegister() {
+    const { productId } = useParams();
     const [review, setReview] = useState({
         title: "",
         content: "",
         writer: "",
-        productId: 0
     });
+
+    const navigate = useNavigate();
 
 //등록버튼을 눌렀을 경우 실행
     const handleSubmit = async (e) => {
         e.preventDefault(); //제출 시 페이지 새로고침 방지
-        const finalReview = { ...review, productId: productId };
+        const finalReview = { ...review, productId: Number(productId) };
         
         try {
-            console.log("보낼 값:", review);
+            console.log("보낼 값:", finalReview);
             const response = await axios.post('http://localhost:8080/cal/board/register', finalReview);
-            setReview({ title: "", content: "", writer: "", productId: 0 }); //입력창 초기화
             console.log("등록 성공");
+            alert("등록 성공");
+            navigate("/", { replace: true });
+
         } catch (error) {
             console.error('오류남: ', error);
             alert("등록 실패");
