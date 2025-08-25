@@ -49,7 +49,7 @@ export default function ProductRegister() {
             console.log("등록 성공");
             alert("등록 성공");
             navigate("/", { replace: true });
-        
+
         } catch (error) {
             console.error('오류남: ', error);
             alert("등록 실패");
@@ -74,6 +74,23 @@ export default function ProductRegister() {
 
             return;
         }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg"]
+
+        if (!allowedTypes.includes(uploadFile.type)) {
+            alert("❌ 이미지 파일만 업로드 가능합니다.");
+            e.target.value = ""; // input 초기화
+            return;
+        }
+
+        // 2) 파일 용량 제한 (2MB 이하 예시)
+        if (uploadFile.size > 2 * 1024 * 1024) {
+            alert("❌ 파일 크기는 2MB 이하만 가능합니다.");
+            e.target.value = ""; // input 초기화
+            return;
+        }
+
+
         setFile(uploadFile);
 
         if (previewUrl) {
@@ -112,7 +129,7 @@ export default function ProductRegister() {
                     </select>
                 </div>
                 <div>
-                    <input type="file" onChange={handleFileChange} />
+                    <input type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
                     {previewUrl && <img src={previewUrl} width="200" />}
                 </div>
                 <div>
