@@ -40,7 +40,7 @@ export default function Login({ onLoginSuccess }) {
      // ✅ redirect 경로 확인 후 이동
       const redirectTo = localStorage.getItem('redirectAfterLogin') || '/';
       localStorage.removeItem('redirectAfterLogin');
-      navigate(redirectTo);
+      navigate(redirectTo, {replace: true });
 
 
 

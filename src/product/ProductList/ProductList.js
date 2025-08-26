@@ -57,7 +57,7 @@ export default function ProductList( {onSelect} ) {
   e.stopPropagation();
   if (!isLoggedIn) {
     alert('로그인 해주세요');
-    navigate('/login', { state: { from: location } }); // 로그인 후 원래 위치로 복귀 가능
+    navigate('/login', {  replace: true, state: { from: location } }); // 로그인 후 원래 위치로 복귀 가능
     return;
   }
   navigate(`/board/register/${productId}`);
@@ -105,14 +105,14 @@ export default function ProductList( {onSelect} ) {
       </div>
 
 
-      {/* 상품 등록 버튼    
-조회쪽에서 만든 상품 등록 미완성 혹시 몰라 놔두는거예요  */
-/*<button onClick={() => navigate('/products/new')}>상품 등록</button>*/}
-
       <div className={styles.product}>
-      <h2>상품 목록 ({total}개)</h2>
-      <button className={styles.btn} onClick={() => navigate(`/product/register`)}> + 상품등록</button>
-      </div>
+    <h2>상품 목록 ({total}개)</h2>
+       {!loading && isAdmin && (<button className={styles.btn}
+          onClick={() => navigate('/product/register')}>
+         + 상품등록
+       </button>
+  )}
+</div>
 
       <div className={styles.listWrap}>
               {products.length > 0 ? (
