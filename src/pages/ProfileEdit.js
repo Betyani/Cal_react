@@ -7,7 +7,7 @@ import account from './Account.module.css';
 
 
 export default function EditProfile() {
-  const [info, setInfo] = useState({ id: '', name: '', nickname: '', email: '' });
+  const [info, setInfo] = useState({ id: '', name: '', nickname: '', email: '', role: 'USER' });
 
   const [passwords, setPasswords] = useState({
     currentPassword: '',
@@ -47,6 +47,7 @@ export default function EditProfile() {
           name: res.data.name,
           nickname: res.data.nickname,
           email: res.data.email,
+          role: res.data.role || 'USER',
         });
         setOriginalNickname(res.data.nickname);
         setOriginalEmail(res.data.email);
@@ -196,11 +197,12 @@ export default function EditProfile() {
           password: passwords.newPassword || '',     // 비워두면 서버에서 기존 비번 유지
           nickname: info.nickname,
           email: info.email,
+           role: info.role,
         },
         { withCredentials: true }
       );
 
-      alert(result.data);
+      alert(result.data?.message || '수정 완료');
       navigate('/');
     } catch (err) {
       alert('❌ 수정 실패: ' + (err.response?.data || '서버 오류'));
