@@ -13,24 +13,26 @@ export default function Header() {
   // 로그인 상태 초기화
   useEffect(() => {
     (async () => {
-     try { const { data } = await axios.get( "http://localhost:8080/cal/member/status", { withCredentials: true });
-      console.log("서버 확인값:", data);
+      try {
+        const { data } = await axios.get("http://localhost:8080/cal/member/status", { withCredentials: true });
+        console.log("서버 확인값:", data);
 
-        setNickname(data.nickname || data.id); // 닉네임 없으면 id 표시
-       setLoggedIn(true);}
-      
-       catch {
-       setNickname('');
-       setLoggedIn(false);
-     }
-   })();
-   
- }, [location.pathname]);  // location 변화에 반응 → 로그인/로그아웃 직후에도 상태 업데이트
+        setNickname(data.nickname);
+        setLoggedIn(true);
+      }
+
+      catch {
+        setNickname('');
+        setLoggedIn(false);
+      }
+    })();
+
+  }, [location.pathname]);  // location 변화에 반응 → 로그인/로그아웃 직후에도 상태 업데이트
 
   // 로그아웃 핸들러
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8080/cal/member/logout', {}, {
+      await axios.post('http://localhost:8080/cal/member/logout', {
         withCredentials: true
       });
       localStorage.removeItem('loggedInUser');
