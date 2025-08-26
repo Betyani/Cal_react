@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './ProductList.module.css';
+import useAuth from '../../components/hooks/useAuth';
+
 
 export default function ProductList( {onSelect} ) {
   const [products, setProducts] = useState([]);                // 상품 목록 (배열 형태)
@@ -15,6 +17,12 @@ export default function ProductList( {onSelect} ) {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;         // 한 페이지당 상품 수
   const blockSize = 5;        // 한 블럭당 페이지 수
+  const location = useLocation();
+  const { isLoggedIn, isMaster, user, loading  } = useAuth(); // 훅 구조에 맞게
+  const isAdmin = isMaster;                          // 관리자 alias
+  const ownerOf = (p) => p.ownerId ?? p.memberId ?? p.writerId ?? p.userId ?? null; // ✅ 소유자 필드 유연 처리
+    
+
 
   useEffect(() => {
 
@@ -42,6 +50,18 @@ export default function ProductList( {onSelect} ) {
   const currentBlock = Math.floor((currentPage - 1) / blockSize);
   const startPage = currentBlock * blockSize + 1;
   const endPage = Math.min(startPage + blockSize - 1, totalPages);
+
+
+
+  const handleClickReview = (productId) => (e) => {
+  e.stopPropagation();
+  if (!isLoggedIn) {
+    alert('로그인 해주세요');
+    navigate('/login', { state: { from: location } }); // 로그인 후 원래 위치로 복귀 가능
+    return;
+  }
+  navigate(`/board/register/${productId}`);
+};
 
 
   return (
@@ -95,37 +115,57 @@ export default function ProductList( {onSelect} ) {
       </div>
 
       <div className={styles.listWrap}>
-        {products.length > 0 ? (
-          products.map((p) => (             //map해서 상품 배열 하나씩 렌더링(p)
-            <article
-              key={p.id} className={styles.card} onClick={() => onSelect?.({id: p.id, name: p.name})}>
-              {p.imageUrl ? (
-                <img
-                  className={styles.thumb}
-                  src={`http://localhost:8080/cal/image/load/${p.imageUrl}`}
-                  alt={p.name}
-                />) : (<div className={`${styles.thumb} ${styles['thumb--placeholder']}`} />)}
-              <h3 className={styles.name}>{p.name}</h3>
-              <div className={styles.meta}>
-                <span className={styles.price}>
-                  {Number(p.price).toLocaleString()}원
-                </span>
-                <span className={styles.category}>{p.category}</span>
-              </div>
-              <div className={styles.buttonWrap}>
-                <button className={`${styles.btn} ${styles.primary}`} onClick={(e) => {e.stopPropagation(); navigate(`/board/register/${p.id}`);}}>리뷰 쓰기</button>
-                {/* 수정 버튼 */}
-                <button className={`${styles.btn} ${styles.outline}`} onClick={(e) => {e.stopPropagation(); navigate(`/product/edit/${p.id}`);}}>수정</button>
-                {/* 삭제버튼*/}
-                <button className={`${styles.btn} ${styles.danger}`} onClick={(e) => {e.stopPropagation(); navigate(`/product/delete/${p.id}`);}}>삭제</button>
-
-              </div>
-            </article>
-          ))
-        ) : (
-          <p>상품이 없습니다.</p>
+              {products.length > 0 ? (
+                products.map((p) => (             //map해서 상품 배열 하나씩 렌더링(p)
+                  <article
+                    key={p.id} className={styles.card} onClick={() => onSelect?.({id: p.id, name: p.name})}>
+                    {p.imageUrl ? (
+                      <img
+                        className={styles.thumb}
+                        src={`http://localhost:8080/cal/image/load/${p.imageUrl}`}
+                        alt={p.name}
+                      />) : (<div className={`${styles.thumb} ${styles['thumb--placeholder']}`} />)}
+                    <h3 className={styles.name}>{p.name}</h3>
+                    
+                    <div className={styles.meta}>
+                      <span className={styles.price}>
+                        {Number(p.price).toLocaleString()}원
+                      </span>
+                      <span className={styles.category}>{p.category}</span>
+                    
+                    </div>
+                    <div className={styles.buttonWrap}>
+                         {/* 로그인한 경우에만 버튼 보이기 (loading 동안은 숨김) */}
+      
+         <button
+           className={`${styles.btn} ${styles.primary}`}
+           onClick={handleClickReview(p.id)}
+          disabled={loading}
+         >
+           리뷰 쓰기
+         </button>
+       
+        {/* 수정/삭제: 관리자 또는 본인 소유일 때만 보이게 */}
+        {(isAdmin || (user?.id && user.id === ownerOf(p))) && (
+          <>
+            <button className={`${styles.btn} ${styles.outline}`}
+               onClick={(e) => { e.stopPropagation(); navigate(`/product/edit/${p.id}`); }}>
+               수정
+            </button>
+            <button className={`${styles.btn} ${styles.danger}`}
+               onClick={(e) => { e.stopPropagation(); navigate(`/product/delete/${p.id}`); }}  >
+                삭제
+            </button>
+          </>
         )}
-      </div>
+              </div>
+                  </article>
+                ))
+              ) : (
+                <p>상품이 없습니다.</p>
+              )}
+            </div>
+      
 
       {/* ✅ 페이징 블럭 */}
       <div className={styles.pagination}>
