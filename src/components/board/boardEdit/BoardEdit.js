@@ -3,8 +3,9 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './BoardEdit.module.css';
 
-export default function BoardEdit({ id }) {
+export default function BoardEdit() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -38,7 +39,7 @@ export default function BoardEdit({ id }) {
     axios.put(`http://localhost:8080/cal/board/update/${id}`, updatedBoard)
       .then(() => {
         alert('✔️ 게시글이 수정되었습니다!');
-        navigate(`/board/detail/${id}`, { replace: true });
+        navigate("/", { replace: true });
       })
       .catch(err => {
         console.error(err);
