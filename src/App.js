@@ -20,6 +20,7 @@ import BoardDetail from './components/board/boardDetail/BoardDetail';
 import BoardEdit from './components/board/boardEdit/BoardEdit';
 import BoardRegister from './components/board/boardRegister/BoardRegister';
 import Frame from './components/Home/Frame';
+import BoardItemRow from './components/board/boardList/BoardItemRow';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
 
           {/* 게시판 */}
           <Route path="/board/list" element={<BoardList />} />
+          <Route path="/board/delete/:id" element={<BoardItemRow />} />
           <Route path="/board/detail/:id" element={<BoardDetail />} />
           <Route path="/board/edit/:id" element={<BoardEdit />} />
           <Route path="/board/register/:productId" element={<BoardRegister />} />
