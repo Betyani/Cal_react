@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import account from './Account.module.css';
 
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
   const [form, setForm] = useState({ id: '', pw: '' });
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();                              //페
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,24 +26,36 @@ export default function Login() {
       );
 
       // 🔔 응답 상태 체크 후 로그인 성공 처리
-      if (response.status === 200) {
-        alert('로그인 성공');
+   if (response.status === 200) {
+      alert('로그인 성공');
 
 
-        // ✅ 로그인 성공 시 사용자 정보 저장
-        localStorage.setItem('loggedInUser', JSON.stringify({ id: form.id }));
+     // ✅ 로그인 성공 시 사용자 정보 저장
+    localStorage.setItem('loggedInUser', JSON.stringify({ id: form.id }));
 
-        navigate('/', { replace: true });
+   if (onLoginSuccess) {
+    onLoginSuccess(); // 👈 여기서 부모에게 알려주는 역할
+     }
 
-      }
-    } catch (error) {
-      console.error('❌ 로그인 실패:', error);
+     // ✅ redirect 경로 확인 후 이동
+      const redirectTo = localStorage.getItem('redirectAfterLogin') || '/';
+      localStorage.removeItem('redirectAfterLogin');
+      navigate(redirectTo , {replace: true });
+
+
+
+    } else {
       alert('로그인 실패');
-      localStorage.removeItem('loggedInUser');  // ✅ 예외 발생 시에도 삭제
+      localStorage.removeItem('loggedInUser');  // ✅ 실패 시에는 삭제
     }
-  };
+  } catch (error) {
+    console.error('❌ 로그인 실패:', error);
+    alert('로그인 실패');
+    localStorage.removeItem('loggedInUser');  // ✅ 예외 발생 시에도 삭제
+  }
+};
 
-  return (
+ return (
     <div className={account.wrap}>
       <div className={account.card}>
         <h2 className={account.title}>로그인</h2>
@@ -57,7 +69,7 @@ export default function Login() {
               onChange={handleChange}
               required
               className={account.input}
-              placeholder="아이디"
+               placeholder="아이디"
             />
           </div>
           <div className={account.formRow}>
@@ -76,10 +88,10 @@ export default function Login() {
             로그인
           </button>
         </form>
-
-
-
-        {/* 👇 추가: 아이디/비번 찾기 하단 액션 */}
+      
+      
+      
+      {/* 👇 추가: 아이디/비번 찾기 하단 액션 */}
         <div className={account.subActions}>
           <button
             type="button"
