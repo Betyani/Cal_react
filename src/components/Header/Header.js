@@ -32,7 +32,7 @@ export default function Header() {
   // 로그아웃 핸들러
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8080/cal/member/logout', {
+      await axios.post('http://localhost:8080/cal/member/logout', {}, {
         withCredentials: true
       });
       localStorage.removeItem('loggedInUser');
