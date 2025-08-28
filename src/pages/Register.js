@@ -3,28 +3,24 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import account from './Account.module.css';
 
+// 🔹 형식 검사 정규식
+const id_POLICY = /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{4,12}$/;
+const pw_POLICY = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&~]).{8,}$/;
+const nickname_POLICY = /^[가-힣a-zA-Z0-9]{2,12}$/;
+const email_POLICY = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function Register() {
-  const [form, setForm] = useState({               
+  const [form, setForm] = useState({
     id: '',
     pw: '',
     name: '',
     nickname: '',
     email: ''
-   });
-  const [validationMessage, setValidationMessage] = useState({                    //틀린 곳 메세지
-    id: '',
-    pw: '',
-    nickname: '',
-    email: ''
-   });
+  });
 
-  const [valid, setValid] = useState({                             //중복확인 버튼 /회원가입 조건 확인 등 제어용
-    id: false,
-    pw: false,
-    nickname: false,
-    email: false
-   });
+  // ✅ 비밀번호만 실시간 메시지/검증 사용
+  const [validationMessage, setValidationMessage] = useState({ pw: '' });
+  const [valid, setValid] = useState({ pw: false });
 
   const navigate = useNavigate();
 
@@ -39,95 +35,64 @@ export default function Register() {
   const [emailChecked, setEmailChecked] = useState(false);
   const [emailMessage, setEmailMessage] = useState('');
 
-  const validate = (name, value) => {
-    let isValid = false;
-    let message = '';
 
-    switch (name) {
-      case 'id':
-        isValid = /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{4,12}$/.test(value);
-        message = isValid ? '✅ 사용 가능한 아이디' : '❌ 영문+숫자 4~12자 입력';
-        break;
-      
-      case 'pw':
-        isValid = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&~]).{8,}$/.test(value);
-        message = isValid ? '✅ 강력한 비밀번호' : '❌ 영문+숫자+특수문자 포함 8자 이상';
-        break;
-      
-     case 'nickname': {
-      if (/\s/.test(value)) {                      // 공백이 하나라도 있으면
-       isValid = false;
-       message = '❌ 공백은 사용할 수 없습니다.';
-  }   else if (/^[가-힣a-zA-Z0-9]{2,12}$/.test(value)) {
-       isValid = true;
-       message = '✅ 닉네임 형식 가능!';
-  }   else {
-       isValid = false;
-       message = '❌ 특수문자 없이 2~12자 입력';
-  }
-  break;
-}
-      
-        case 'email':
-        isValid =  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-        message = isValid ? '✅ 사용가능한 이메일' : '❌ 이메일 형식이 올바르지 않습니다';
-        break;
-        default:
-        break;
-    }
-
-    setValidationMessage(prev => ({ ...prev, [name]: message }));
-    setValid(prev => ({ ...prev, [name]: isValid }));
+  // 비밀번호만 검증
+  const validatePw = (value) => {
+    const ok = pw_POLICY.test(value);
+    setValidationMessage((prev) => ({
+      ...prev,
+      pw: value ? (ok ? '✅ 강력한 비밀번호' : '❌ 영문+숫자+특수문자 포함 8자 이상') : ''
+    }));
+    setValid((prev) => ({ ...prev, pw: ok }));
   };
 
-  
-    const handleChange = (e) => {                        //적으면 메세지가 뜨는데 지우면 초기화 기능
+  // onChange: 값 반영 + 비번만 즉시 검증, 나머지는 중복체크 상태 리셋
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-    validate(name, value);
+    setForm((prev) => ({ ...prev, [name]: value }));
 
-     if (value === '') {
-      setValidationMessage(prev => ({ ...prev, [name]: '' }));
+
+    if (name === 'pw') {
+      validatePw(value);
     }
-
-  
-
     if (name === 'id') {
       setIdChecked(false);
       setIdMessage('');
-    } else if (name === 'nickname') {
+    } 
+    if (name === 'nickname') {
       setNicknameChecked(false);
       setNicknameMessage('');
-    } else if (name === 'email') {
+    } 
+    if (name === 'email') {
       setEmailChecked(false);
       setEmailMessage('');
     }
   };
 
-
-  const handleRegister = async (e) => {                                 //회원가임 버튼 실행
+  // 회원가입
+  const handleRegister = async (e) => {
     e.preventDefault();
 
+    // 비번 + 3중 중복확인 + 이름 입력
     const ready =
-        valid.id && valid.pw && valid.nickname && valid.email &&
-        idChecked && nicknameChecked && emailChecked &&
-        form.name.trim();
+      valid.pw && idChecked && nicknameChecked && emailChecked && form.name.trim();
 
     if (!ready) {
       alert('입력 형식 및 중복 확인을 완료해주세요.');
       return;
     }
 
-
     try {
-      await axios.put('http://localhost:8080/cal/member/register', {
-        id: form.id,    // 🔔 서버는 username으로 받음
-        password: form.pw,    // 🔔 서버는 password로 받음
-        name: form.name,
-        nickname: form.nickname, 
-        email: form.email
-      });
-
+      await axios.put(
+        'http://localhost:8080/cal/member/register',
+        {
+          id: form.id.trim(),
+          password: form.pw,             //  공백 허용 trim() 만 넣으면 됨 쫌 외우자 
+          name: form.name.trim(),
+          nickname: form.nickname.trim(),
+          email: form.email.trim()
+        }
+      );
       alert('회원가입 성공');
       navigate('/login');
     } catch (error) {
@@ -135,185 +100,219 @@ export default function Register() {
       alert('회원가입 실패');
     }
   };
-
-console.log("valid:", valid); 
-console.log("중복확인 상태:", idChecked, nicknameChecked, emailChecked); 
-console.log("form.name.trim():", `"${form.name.trim()}"`);
+console.log("중복확인 상태:", idChecked, nicknameChecked, emailChecked);
 
   return (
-     <div className={account.wrap}>
+    <div className={account.wrap}>
       <div className={account.card}>
-      <h2 className={account.title}>회원가입</h2>
+        <h2 className={account.title}>회원가입</h2>
 
-      <form onSubmit={handleRegister}className={account.form}>
-        <div className={account.formRow}>
-          <label className={account.label}>아이디</label>
-          <input
-            type="text"
-            name="id"
-            value={form.id}
-            onChange={(e) =>   {
-            handleChange(e);
-            setIdChecked(false); //닉네임 변경시 다시 체크 확인
-            setIdMessage('');
-          }}
-            required
-            className={account.input}
-            placeholder="아이디"
-          />
-          <button type="button" className={account.ghostButton} 
-           onClick={async () => {
-            if (!form.id.trim()) {
-              setIdMessage("⚠️ 아이디를 먼저 입력하세요.");
-              setIdChecked(false);
-              return;
-            }
+        <form onSubmit={handleRegister} className={account.form}>
+          {/* 아이디 */}
+          <div className={account.formRow}>
+            <label className={account.label}>아이디</label>
+            <input
+              type="text"
+              name="id"
+              value={form.id}
+              onChange={handleChange}
+              required
+              className={account.input}
+              placeholder="아이디"
+            />
+            <button
+              type="button"
+              className={account.ghostButton}
+              onClick={async () => {
+                const idCheck = form.id.trim();
+                if (!idCheck) {
+                  setIdMessage('⚠️ 아이디를 먼저 입력하세요.');
+                  setIdChecked(false);
+                  return;
+                }
+                if (!id_POLICY.test(idCheck)) {
+                  setIdMessage('❌ 영문+숫자 4~12자 입력');
+                  setIdChecked(false);
+                  return;
+                }
+                try {
+                  const res = await axios.get(
+                    'http://localhost:8080/cal/member/check-id',
+                    { params: { id: idCheck } }   // ← 자동 인코딩
+                  );
+                  const msg = String(res.data);
+                  setIdMessage(msg);
+                  setIdChecked(msg.includes('사용 가능'));
+                } catch (err) {
+                  setIdMessage(err.response?.data || '중복 확인 중 오류 발생');
+                  setIdChecked(false);
+                }
+              }}
+            >
+              아이디 중복 확인
+            </button>
+          </div>
+          {idMessage && (
+            <p className={`${account.help} ${idMessage.includes('사용 가능') ? account.ok : account.err}`}>
+              {idMessage}
+            </p>
+          )}
 
-         try{
-            const res = await axios.get(`http://localhost:8080/cal/member/check-id?id=${form.id}`);
-            setIdMessage(res.data);
-            setIdChecked(true);
-            }
-             catch (err) {
-            setIdMessage(err.response?.data || "중복 확인 중 오류 발생");
-            setIdChecked(false);
-            }
-            }}> 아이디 중복 확인</button>
-            </div>
-            {idMessage && (
-              <p className={`${account.help} ${idMessage.includes('사용 가능') ? account.ok : account.err}`}>
-               {idMessage}
-               </p>
-)}
-        
-        
-        <div className={account.formRow}>
+          {/* 비밀번호 */}
+          <div className={account.formRow}>
             <label className={account.label}>비밀번호</label>
             <div className={account.inlineRow}>
-         <input
-            type={showPassword ? 'text' : 'password'} 
-            name="pw"
-            value={form.pw}
-            onChange={handleChange}
-            required
-             className={account.input}
-             placeholder="영문+숫자+특수문자 포함 8자 이상"
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="pw"
+                value={form.pw}
+                onChange={handleChange}
+                required
+                className={account.input}
+                placeholder="영문+숫자+특수문자 포함 8자 이상"
+              />
+              <button
+                type="button"
+                className={account.inlineButton}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? '숨김' : '보기'}
+              </button>
+            </div>
+            <p style={{ color: valid.pw ? 'green' : 'red' }}>{validationMessage.pw}</p>
+          </div>
 
-          />
-          <button type="button" className={account.inlineButton} 
-          onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? '숨김' : '보기'}
-          </button>
-         </div>
-         <p style={{ color: valid.pw ? 'green' : 'red' }}>{validationMessage.pw}</p>
-        </div>
+          {/* 이름 */}
+          <div className={account.formRow}>
+            <label className={account.label}>이름</label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className={account.input}
+              placeholder="이름"
+            />
+          </div>
 
-        <div className={account.formRow}>
-          <label className={account.label}>이름</label>
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className={account.input}
-            placeholder="이름"
-          /> 
-        </div>
+          {/* 닉네임 */}
+          <div className={account.formRow}>
+            <label className={account.label}>닉네임</label>
+            <input
+              type="text"
+              name="nickname"
+              value={form.nickname}
+              onChange={handleChange}
+              required
+              className={account.input}
+              placeholder="닉네임"
+            />
+            <button
+              type="button"
+              className={account.ghostButton}
+              onClick={async () => {
+                const nicknameCheck = form.nickname;
+                if (!nicknameCheck.trim()) {
+                  setNicknameMessage('⚠️ 닉네임을 먼저 입력하세요.');
+                  setNicknameChecked(false);
+                  return;
+                }
+                if (/\s/.test(nicknameCheck)) {
+                  setNicknameMessage('❌ 공백은 사용할 수 없습니다.');
+                  setNicknameChecked(false);
+                  return;
+                }
+                if (!nickname_POLICY.test(nicknameCheck)) {
+                  setNicknameMessage('❌ 특수문자 없이 2~12자 입력');
+                  setNicknameChecked(false);
+                  return;
+                }
+                try {
+                  const res = await axios.get(
+                    'http://localhost:8080/cal/member/check-nickname',
+                    { params: { nickname: nicknameCheck } }
+                  );
+                  const msg = String(res.data);
+                  setNicknameMessage(msg);
+                  setNicknameChecked(msg.includes('사용 가능'));
+                } catch (err) {
+                  setNicknameMessage(err.response?.data || '중복 확인 중 오류 발생');
+                  setNicknameChecked(false);
+                }
+              }}
+            >
+              중복 확인
+            </button>
 
-        <div className={account.formRow}>
-          <label className={account.label}>닉네임</label>
-          <input
-           type="text"
-           name="nickname"
-           value={form.nickname}
-           onChange={(e) =>    {
-            handleChange(e);
-            setNicknameChecked(false); //닉네임 변경시 다시 체크 확인
-            setNicknameMessage('');
-          }}
-           required
-           className={account.input}
-           placeholder="닉네임"
-          />
-         <button type="button"  className={account.ghostButton} 
-          onClick={async () => {
-            if (!form.nickname.trim()) {
-           setNicknameMessage("⚠️ 닉네임을 먼저 입력하세요.");
-           setNicknameChecked(false);
-             return;
-            }
-           try {
-             const res = await axios.get(`http://localhost:8080/cal/member/check-nickname?nickname=${form.nickname}`);
-             setNicknameMessage(res.data);       // 예: "사용 가능한 닉네임입니다."
-             setNicknameChecked(true);
-            } 
-            catch (err) {
-             setNicknameMessage(err.response?.data || "중복 확인 중 오류 발생");
-             setNicknameChecked(false);
-            }
-            }}> 중복 확인 </button>
-           
             <p className={`${account.help} ${nicknameChecked ? account.ok : account.err}`}>
-             {nicknameMessage}
+              {nicknameMessage}
             </p>
-</div> 
-       
-        <div className={account.formRow}>
-        <label className={account.label}>이메일</label>
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={(e) => {
-            handleChange(e);
-            setEmailChecked(false);
-            setEmailMessage('');
-          }}
-          required
-          className={account.input}
-          placeholder="email@example.com"
-        />
+          </div>
 
-      <button type="button" className={account.ghostButton} 
-      onClick={async () => {
-            if (!valid.email) {
-              setEmailMessage("❌ 이메일 형식이 올바르지 않습니다.");
-              setEmailChecked(false);
-              return;
+          {/* 이메일 */}
+          <div className={account.formRow}>
+            <label className={account.label}>이메일</label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className={account.input}
+              placeholder="email@example.com"
+            />
+
+            <button
+              type="button"
+              className={account.ghostButton}
+              onClick={async () => {
+                const emailCheck = form.email.trim();
+                if (!emailCheck) {
+                  setEmailMessage('⚠️ 이메일을 먼저 입력하세요.');
+                  setEmailChecked(false);
+                  return;
+                }
+                if (!email_POLICY.test(emailCheck)) {
+                  setEmailMessage('❌ 이메일 형식이 올바르지 않습니다.');
+                  setEmailChecked(false);
+                  return;
+                }
+                try {
+                  const res = await axios.get(
+                    'http://localhost:8080/cal/member/check-email',
+                    { params: { email: emailCheck } }
+                  );
+                  const msg = String(res.data);
+                  setEmailMessage(msg);
+                  setEmailChecked(msg.includes('사용 가능'));
+                } catch (err) {
+                  setEmailMessage(err.response?.data || '중복 확인 중 오류 발생');
+                  setEmailChecked(false);
+                }
+              }}
+            >
+              이메일 중복 확인
+            </button>
+
+            <p className={`${account.help} ${emailChecked ? account.ok : account.err}`}>{emailMessage}</p>
+          </div>
+
+          {/* 제출 버튼 */}
+          <button
+            type="submit"
+            disabled={
+              !valid.pw ||     
+              !idChecked ||    
+              !nicknameChecked || 
+              !emailChecked ||    
+              !form.name.trim()   // 이름 입력
             }
-
-      try {
-        const res = await axios.get(`http://localhost:8080/cal/member/check-email?email=${form.email}`);
-        setEmailMessage(res.data);
-        setEmailChecked(true);
-      } catch (err) {
-        setEmailMessage(err.response?.data || "중복 확인 중 오류 발생");
-        setEmailChecked(false);
-      }
-    }}>
-    이메일 중복 확인
-  </button>
-
-  <p className={`${account.help} ${emailChecked ? account.ok : account.err}`}>{emailMessage}</p>
-
-</div>
-
-        <button type="submit" disabled={
-           !valid.id ||
-           !valid.pw ||
-           !valid.email ||
-           !valid.nickname ||
-           !nicknameChecked||
-           !idChecked ||
-           !emailChecked||
-           !form.name.trim()                  // 👈 이름이 빈 문자열이면 비활성화
-           //                                   중복 체크도 완료되어야 가능
-           }>
-           회원가입 </button>    
-        
-      </form>
-    </div>
+          >
+            회원가입
+          </button>
+        </form>
       </div>
+    </div>
   );
 }
