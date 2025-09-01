@@ -3,12 +3,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import account from './Account.module.css';
 
-
-export default function Login({ onLoginSuccess }) {
+export default function Login() {
   const [form, setForm] = useState({ id: '', pw: '' });
-  const navigate = useNavigate();                              //페
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e) => {    //로그인 아이디 비번 입력가능
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
@@ -18,41 +17,20 @@ export default function Login({ onLoginSuccess }) {
     try {
       const response = await axios.post(
         'http://localhost:8080/cal/member/login',
-        {
-          id: form.id,
-          password: form.pw
-        },
+        { id: form.id, password: form.pw },
         { withCredentials: true }
+        
       );
-
-      // 🔔 응답 상태 체크 후 로그인 성공 처리
       if (response.status === 200) {
         alert('로그인 성공');
-
-
-        // ✅ 로그인 성공 시 사용자 정보 저장
-        localStorage.setItem('loggedInUser', JSON.stringify({ id: form.id }));
-
-        if (onLoginSuccess) {
-          onLoginSuccess(); // 👈 여기서 부모에게 알려주는 역할
-        }
-
-        // ✅ redirect 경로 확인 후 이동
-        const redirectTo = localStorage.getItem('redirectAfterLogin') || '/';
-        localStorage.removeItem('redirectAfterLogin');
-        navigate(redirectTo, { replace: true });
-
-
-
-      } else {
-        alert('로그인 실패');
-        localStorage.removeItem('loggedInUser');  // ✅ 실패 시에는 삭제
+        navigate('/', { replace: true });
+        localStorage.setItem('loggedInUser', JSON.stringify(response.data)); //로그인 성공 시 로컬 저장
       }
-    } catch (error) {
-      console.error('❌ 로그인 실패:', error);
+    } catch {
       alert('로그인 실패');
-      localStorage.removeItem('loggedInUser');  // ✅ 예외 발생 시에도 삭제
+      localStorage.removeItem('loggedInUser');
     }
+    
   };
 
   return (
@@ -78,7 +56,7 @@ export default function Login({ onLoginSuccess }) {
               type="password"
               name="pw"
               value={form.pw}
-              onChange={handleChange}
+               onChange={ handleChange}
               required
               className={account.input}
               placeholder="비밀번호"
@@ -90,8 +68,11 @@ export default function Login({ onLoginSuccess }) {
         </form>
 
 
+<<<<<<< HEAD
 
         {/* 👇 추가: 아이디/비번 찾기 하단 액션 */}
+=======
+>>>>>>> e3ea7b61f86542c4fc05bec73a6266c5de13fe89
         <div className={account.subActions}>
           <button
             type="button"

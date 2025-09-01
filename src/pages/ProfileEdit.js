@@ -1,300 +1,345 @@
-import { useState, useEffect } from 'react';
+// src/pages/EditProfile.jsx
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import account from './Account.module.css';
 
-
-
+// 회원가입과 동일한 비밀번호 정책
+const PW_POLICY = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&~]).{8,}$/;
 
 export default function EditProfile() {
+  // 내 정보
   const [info, setInfo] = useState({ id: '', name: '', nickname: '', email: '', role: 'USER' });
+  // 원본(변경 여부 판단)
+  const [original, setOriginal] = useState({ nickname: '', email: '' });
 
-  const [passwords, setPasswords] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+  // 비밀번호 입력 + 메시지/검증 상태
+  const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
+  const [pwMsg, setPwMsg] = useState('');
+  const [matchMsg, setMatchMsg] = useState('');
+  const [validPw, setValidPw] = useState(false);
 
-  const [error, setError] = useState('');
-  const [nicknameMsg, setNicknameMsg] = useState('');
-  const [emailMsg, setEmailMsg] = useState('');
-  const [originalNickname, setOriginalNickname] = useState('');
-  const [originalEmail, setOriginalEmail] = useState('');
+  // 현재 비밀번호 서버 검증 결과(회원가입의 “중복 확인” UX와 동일)
+  const [currentChecked, setCurrentChecked] = useState(false);
+  const [currentMsg, setCurrentMsg] = useState('');
 
-  // 비밀번호 관련 상태/메시지
-  const [isCurrentPwValid, setIsCurrentPwValid] = useState(false);
-  const [currentPwMsg, setCurrentPwMsg] = useState('');
-  const [matchMsg, setMatchMsg] = useState('');     // 새 비번=확인 일치 메시지
-  const [pwRuleMsg, setPwRuleMsg] = useState('');   // 새 비번 규칙 메시지
+  // 닉네임/이메일 중복 확인 상태
+  const [nicknameChecked, setNicknameChecked] = useState(true);
+  const [nicknameMessage, setNicknameMessage] = useState('');
+  const [emailChecked, setEmailChecked] = useState(true);
+  const [emailMessage, setEmailMessage] = useState('');
+
+  // 비번 보기/숨김
+  const [showNext, setShowNext] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // 상단 안내문 & 로딩
+  const [formMessage, setFormMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // 새 비밀번호 정책: 영문 + 숫자 + 특수문자, 최소 8자
-  const PW_POLICY = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&~ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]).{8,}$/;
-
+  // 최초 로딩: 내 정보 조회
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    const id = loggedInUser?.id || loggedInUser?.username; // 저장 구조에 맞춰 사용
-    if (!id) {
-      setError('로그인 정보가 없습니다.');
-      return;
-    }
-    axios
-      .get(`http://localhost:8080/cal/member/find-by-id?id=${id}`, { withCredentials: true })
-      .then((res) => {
-        setInfo({
-          id: res.data.id,
-          name: res.data.name,
-          nickname: res.data.nickname,
-          email: res.data.email,
-          role: res.data.role || 'USER',
-        });
-        setOriginalNickname(res.data.nickname);
-        setOriginalEmail(res.data.email);
-      })
-      .catch(() => setError('회원 정보 불러오기 실패'));
+    const saved = JSON.parse(localStorage.getItem('loggedInUser'));
+    const id = saved?.id || saved?.username;
+    if (!id) { setFormMessage('로그인 정보가 없습니다.'); return; }
+
+    axios.get('http://localhost:8080/cal/member/find-by-id', {
+      params: { id },
+      withCredentials: true,
+    })
+    .then(({ data }) => {
+      setInfo({
+        id: data.id,
+        name: data.name,
+        nickname: data.nickname,
+        email: data.email,
+        role: data.role || 'USER',
+      });
+      setOriginal({ nickname: data.nickname, email: data.email });
+    })
+    .catch(() => setFormMessage('회원 정보 불러오기 실패'));
   }, []);
 
-  const handleInfoChange = (e) => {
+  // 정보 입력 변경
+  const onInfo = (e) => {
     const { name, value } = e.target;
-    setInfo({ ...info, [name]: value });
+    setInfo(prev => ({ ...prev, [name]: value }));
+
+    // 값이 바뀌면 중복확인 상태 리셋 (원래 값이면 통과 유지)
+    if (name === 'nickname') {
+      setNicknameChecked(value === original.nickname);
+      setNicknameMessage('');
+    }
+    if (name === 'email') {
+      setEmailChecked(value === original.email);
+      setEmailMessage('');
+    }
   };
 
- const updateMatchMsg = (next) => {
-    const { newPassword, confirmPassword } = next;
-    if (!newPassword && !confirmPassword) return setMatchMsg('');
-    if (newPassword && confirmPassword) {
-      setMatchMsg(newPassword === confirmPassword ? '✅ 새 비밀번호가 일치합니다.' : '❌ 새 비밀번호가 일치하지 않습니다.');
+  // 비밀번호 입력/검증
+  const onPw = (e) => {
+    const { name, value } = e.target;
+    const next = { ...pw, [name]: value };
+    setPw(next);
+
+    if (name === 'next') {
+      if (!value) { setPwMsg(''); setValidPw(false); }
+      else {
+        const ok = PW_POLICY.test(value);
+        setValidPw(ok);
+        setPwMsg(ok ? '✅ 강력한 비밀번호' : '❌ 영문+숫자+특수문자 포함 8자 이상');
+      }
+    }
+    if (next.next && next.confirm) {
+      setMatchMsg(next.next === next.confirm ? '✅ 새 비밀번호가 일치합니다.' : '❌ 새 비밀번호가 일치하지 않습니다.');
     } else {
       setMatchMsg('');
     }
+
+    if (name === 'current') {
+      setCurrentChecked(false);
+      setCurrentMsg('');
+    }
   };
 
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    const next = { ...passwords, [name]: value };
-    setPasswords(next);
-
-    // 새 비번 규칙 검사
-    if (name === 'newPassword') {
-      if (!value) {
-        setPwRuleMsg('');
-        setIsCurrentPwValid(false);
-        setCurrentPwMsg('');
-      } else if (!PW_POLICY.test(value)) {
-        setPwRuleMsg('❌ 비밀번호는 영문+숫자+특수문자를 포함한 8자 이상이어야 합니다.');
-      } else {
-        setPwRuleMsg('✅ 사용 가능한 비밀번호입니다.');
-      }
-    }
-
-    // 새 비번=확인 일치 검사
-    updateMatchMsg(next);
-  };
-
-  // 현재 비밀번호 검증 (백엔드 수정 없이 /member/login 사용)
-  const verifyCurrentPassword = async () => {
-    // 새 비번을 변경하지 않는다면 검증 스킵
-    if (!(passwords.currentPassword ||
-          passwords.newPassword || 
-          passwords.confirmPassword)) {
-      return true;
-    }
-    if (!passwords.currentPassword) {
-      setIsCurrentPwValid(false);
-      setCurrentPwMsg('❌ 현재 비밀번호를 입력하세요.');
-      return false;          
-    }
-
+  // 현재 비밀번호 확인(서버)
+  const verifyCurrent = async () => {
+    if (!pw.current) { setCurrentMsg('⚠️ 현재 비밀번호를 입력하세요.'); setCurrentChecked(false); return; }
     try {
       await axios.post(
         'http://localhost:8080/cal/member/login',
-        { id: info.id, password: passwords.currentPassword },
+        { id: info.id, password: pw.current },
         { withCredentials: true }
       );
-      setIsCurrentPwValid(true);
-      setCurrentPwMsg('✅ 기존 비밀번호가 확인되었습니다.');
-      return true;          
+      setCurrentChecked(true);
+      setCurrentMsg('✅ 기존 비밀번호가 확인되었습니다.');
     } catch {
-      setIsCurrentPwValid(false);
-      setCurrentPwMsg('❌ 기존 비밀번호가 맞지 않습니다.');
-      return false;
+      setCurrentChecked(false);
+      setCurrentMsg('❌ 기존 비밀번호가 맞지 않습니다.');
     }
   };
 
+  // 닉네임/이메일 중복 확인
   const checkNickname = async () => {
-    if (info.nickname === originalNickname) { setNicknameMsg(''); return true; }
+    if (info.nickname === original.nickname) { setNicknameChecked(true); setNicknameMessage(''); return; }
     try {
-      await axios.get(`http://localhost:8080/cal/member/check-nickname?nickname=${info.nickname}`);
-      setNicknameMsg('✅ 사용 가능한 닉네임입니다.');
-      return true;
-    } catch {
-      setNicknameMsg('❌ 이미 사용 중인 닉네임입니다.');
-      return false;
+      const { data } = await axios.get('http://localhost:8080/cal/member/check-nickname', {
+        params: { nickname: info.nickname },
+      });
+      const msg = String(data);
+      setNicknameMessage(msg);
+      setNicknameChecked(msg.includes('사용 가능'));
+    } catch (err) {
+      setNicknameMessage(err.response?.data || '중복 확인 중 오류');
+      setNicknameChecked(false);
     }
   };
-
   const checkEmail = async () => {
-    if (info.email === originalEmail)  { setEmailMsg(''); return true; }
+    if (info.email === original.email) { setEmailChecked(true); setEmailMessage(''); return; }
     try {
-      await axios.get(`http://localhost:8080/cal/member/check-email?email=${info.email}`);
-      setEmailMsg('✅ 사용 가능한 이메일입니다.');
-      return true;
-    } catch {
-      setEmailMsg('❌ 이미 사용 중인 이메일입니다.');
-      return false;
+      const { data } = await axios.get('http://localhost:8080/cal/member/check-email', {
+        params: { email: info.email },
+      });
+      const msg = String(data);
+      setEmailMessage(msg);
+      setEmailChecked(msg.includes('사용 가능'));
+    } catch (err) {
+      setEmailMessage(err.response?.data || '중복 확인 중 오류');
+      setEmailChecked(false);
     }
   };
 
-  const handleUpdate = async (e) => {
+  // 제출
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormMessage('');
 
-     // 변경 여부 계산   쉽게 말함info입력 orugunal 기존
-    const changedNickname  = info.nickname !== originalNickname;
-    const changedEmail     = info.email    !== originalEmail;
-    const changingPassword = !!(passwords.currentPassword || passwords.newPassword || passwords.confirmPassword);
-    const noChanges        = !changedNickname && !changedEmail && !changingPassword;
+    const changedNickname  = info.nickname !== original.nickname;
+    const changedEmail     = info.email    !== original.email;
+    const changingPassword = !!(pw.current || pw.next || pw.confirm);
 
-    if (noChanges) {
-      alert('변경된 내용이 없습니다.');
+    if (!changedNickname && !changedEmail && !changingPassword) {
+      setFormMessage('변경된 내용이 없습니다.');
       return;
     }
 
-
-    // 새 비번 입력이 있는 경우에만 아래 가드들 적용
     if (changingPassword) {
-      if (!PW_POLICY.test(passwords.newPassword || '')) {
-        alert('새 비밀번호 형식이 올바르지 않습니다. (영문/숫자/특수문자 포함, 8자 이상)');
-        return;
-      }
-      if (passwords.newPassword !== passwords.confirmPassword) {
-        alert('새 비밀번호가 일치하지 않습니다.');
-        return;
-      }
-      const okPw = await verifyCurrentPassword();
-      if (!okPw) {
-        alert('현재 비밀번호가 올바르지 않습니다.');
-        return;
-      }
+      if (!validPw) { setFormMessage('새 비밀번호 형식이 올바르지 않습니다.'); 
+        return; }
+      if (pw.next !== pw.confirm) { setFormMessage('새 비밀번호가 일치하지 않습니다.');
+         return; }
+      if (!currentChecked) { setFormMessage('현재 비밀번호 확인을 완료하세요.');
+         return; }
     }
-
-    // 닉/이메일 중복 실패 시 차단
-    if (changedNickname) {
-      const okNick = await checkNickname();
-      if (!okNick) return;
-    }
-    if (changedEmail) {
-      const okEmail = await checkEmail();
-      if (!okEmail) return;
-    }
-
+    if (changedNickname && !nicknameChecked) { setFormMessage('닉네임 중복 확인을 완료하세요.'); return; }
+    if (changedEmail && !emailChecked) { setFormMessage('이메일 중복 확인을 완료하세요.'); return; }
 
     try {
-      const result = await axios.post(
+      setLoading(true);
+      await axios.post(
         'http://localhost:8080/cal/member/update',
         {
-          id: info.id,                               // 현재 백엔드가 id를 요구하는 구조
-          password: passwords.newPassword || '',     // 비워두면 서버에서 기존 비번 유지
+          id: info.id,
+          password: changingPassword ? pw.next : '', // 비번 미변경 시 서버가 무시
           nickname: info.nickname,
           email: info.email,
-           role: info.role,
+          role: info.role,                            // 자기 수정은 서버에서 무시됨
         },
         { withCredentials: true }
       );
 
-      alert(result.data?.message || '수정 완료');
-      navigate('/');
+      navigate('/'); // 조용히 이동 (팝업 X)
     } catch (err) {
-      alert('❌ 수정 실패: ' + (err.response?.data || '서버 오류'));
+      setFormMessage(err.response?.data?.message || '수정 실패. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // 제출 비활성화 조건
-  const submitDisabled =
-    nicknameMsg.startsWith('❌') ||
-    emailMsg.startsWith('❌') ||
-    // 새 비번을 입력하는 경우: 규칙 충족 + 일치 + 현재 비번 OK 필요
-    ((passwords.newPassword || passwords.confirmPassword)
-      ? !PW_POLICY.test(passwords.newPassword || '') ||
-        passwords.newPassword !== passwords.confirmPassword 
-      : false);
-
   return (
-  <div className={account.wrap}>
-    <div className={account.card}>
-      <h2 className={account.title}>회원 정보 수정</h2>
+    <div className={account.wrap}>
+      <div className={account.card}>
+        <h2 className={account.title}>회원 정보 수정</h2>
 
-      {error && <p className={`${account.help} ${account.err}`}>{error}</p>}
+        {formMessage && <p className={`${account.help} ${account.err}`}>{formMessage}</p>}
 
-      <div className={account.section}>
-        <h3 className={account.sectionTitle}>내 정보</h3>
-        <div className={account.infoGrid}>
-          <p className={account.infoRow}><strong>아이디</strong><span>{info.id}</span></p>
-          <p className={account.infoRow}><strong>이름</strong><span>{info.name}</span></p>
+        {/* 읽기 전용 정보 */}
+        <div className={account.section}>
+          <h3 className={account.sectionTitle}>내 정보</h3>
+          <div className={account.formRow}>
+            <label className={account.label}>아이디</label>
+            <input className={account.input} name="id" value={info.id} readOnly />
+          </div>
+          <div className={account.formRow}>
+            <label className={account.label}>이름</label>
+            <input className={account.input} name="name" value={info.name} readOnly />
+          </div>
         </div>
+
+        <form onSubmit={handleSubmit} className={account.form}>
+          {/* 비밀번호 변경 */}
+          <div className={account.section}>
+            <h3 className={account.sectionTitle}>비밀번호 변경</h3>
+
+            {/* 현재 비밀번호 + 확인 버튼 */}
+            <div className={account.formRow}>
+              <label className={account.label}>현재 비밀번호</label>
+              <div className={account.inlineRow}>
+                <input
+                  name="current"
+                  value={pw.current}
+                  onChange={onPw}
+                  className={account.input}
+                  placeholder="현재 비밀번호"
+                />
+
+                <button type="button" className={account.ghostButton} onClick={verifyCurrent}>
+                  현재 비밀번호 확인
+                </button>
+              </div>
+              {currentMsg && (
+                <p className={`${account.help} ${currentChecked ? account.ok : account.err}`}>{currentMsg}</p>
+              )}
+            </div>
+
+            {/* 새 비밀번호 */}
+            <div className={account.formRow}>
+              <label className={account.label}>새 비밀번호</label>
+              <div className={account.inlineRow}>
+                <input
+                  type={showNext ? 'text' : 'password'}
+                  name="next"
+                  value={pw.next}
+                  onChange={onPw}
+                  className={account.input}
+                  placeholder="영문+숫자+특수문자 8자 이상"
+                />
+                <button type="button" className={account.inlineButton} onClick={() => setShowNext(v => !v)}>
+                  {showNext ? '숨김' : '보기'}
+                </button>
+              </div>
+              {pwMsg && <p className={`${account.help} ${validPw ? account.ok : account.err}`}>{pwMsg}</p>}
+            </div>
+
+            {/* 새 비밀번호 확인 */}
+            <div className={account.formRow}>
+              <label className={account.label}>새 비밀번호 확인</label>
+              <div className={account.inlineRow}>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  name="confirm"
+                  value={pw.confirm}
+                  onChange={onPw}
+                  className={account.input}
+                  placeholder="새 비밀번호 확인"
+                />
+                <button type="button" className={account.inlineButton} onClick={() => setShowConfirm(v => !v)}>
+                  {showConfirm ? '숨김' : '보기'}
+                </button>
+              </div>
+              {matchMsg && (
+                <p className={`${account.help} ${matchMsg.startsWith('✅') ? account.ok : account.err}`}>{matchMsg}</p>
+              )}
+            </div>
+          </div>
+
+          {/* 닉네임 / 이메일 */}
+          <div className={account.section}>
+            <h3 className={account.sectionTitle}>닉네임 / 이메일 수정</h3>
+
+            <div className={account.formRow}>
+              <label className={account.label}>닉네임</label>
+              <input
+                className={account.input}
+                name="nickname"
+                value={info.nickname}
+                onChange={onInfo}
+                placeholder="닉네임"
+              />
+              <button type="button" className={account.ghostButton} onClick={checkNickname}>
+                중복 확인
+              </button>
+              {nicknameMessage && (
+                <p className={`${account.help} ${nicknameChecked ? account.ok : account.err}`}>{nicknameMessage}</p>
+              )}
+            </div>
+
+            <div className={account.formRow}>
+              <label className={account.label}>이메일</label>
+              <input
+                className={account.input}
+                name="email"
+                value={info.email}
+                onChange={onInfo}
+                placeholder="email@example.com"
+              />
+              <button type="button" className={account.ghostButton} onClick={checkEmail}>
+                이메일 중복 확인
+              </button>
+              {emailMessage && (
+                <p className={`${account.help} ${emailChecked ? account.ok : account.err}`}>{emailMessage}</p>
+              )}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className={account.submit}
+            disabled={
+              loading ||
+              ((pw.current || pw.next || pw.confirm) &&
+                (!validPw || pw.next !== pw.confirm || !currentChecked)) ||
+              
+              ((info.nickname !== original.nickname) && !nicknameChecked) ||
+              ((info.email !== original.email) && !emailChecked)
+            }
+          >
+            {loading ? '저장 중…' : '회원정보 수정'}
+          </button>
+        </form>
       </div>
-
-      <form onSubmit={handleUpdate} className={account.form}>
-        <div className={account.section}>
-          <h3 className={account.sectionTitle}>비밀번호 변경</h3>
-
-          <div className={account.formRow}>
-            <label className={account.label}>현재 비밀번호</label>
-            <input className={account.input} type="password" name="currentPassword"
-                   value={passwords.currentPassword}
-                   onChange={handlePasswordChange}
-                   onBlur={verifyCurrentPassword}
-                   placeholder="현재 비밀번호" />
-            <p className={`${account.help} ${isCurrentPwValid ? account.ok : account.err}`}>{currentPwMsg}</p>
-          </div>
-
-          <div className={account.formRow}>
-            <label className={account.label}>새 비밀번호</label>
-            <input className={account.input} type="password" name="newPassword"
-                   value={passwords.newPassword}
-                   onChange={handlePasswordChange}
-                   placeholder="새 비밀번호 (영문/숫자/특수문자 포함 8자+)" />
-            <p className={`${account.help} ${pwRuleMsg.startsWith('✅') ? account.ok : account.err}`}>{pwRuleMsg}</p>
-          </div>
-
-          <div className={account.formRow}>
-            <label className={account.label}>새 비밀번호 확인</label>
-            <input className={account.input} type="password" name="confirmPassword"
-                   value={passwords.confirmPassword}
-                   onChange={handlePasswordChange}
-                   placeholder="새 비밀번호 확인" />
-            <p className={`${account.help} ${matchMsg.startsWith('✅') ? account.ok : account.err}`}>{matchMsg}</p>
-          </div>
-        </div>
-
-        <div className={account.section}>
-          <h3 className={account.sectionTitle}>닉네임 / 이메일 수정</h3>
-
-          <div className={account.formRow}>
-            <label className={account.label}>닉네임</label>
-            <input className={account.input} name="nickname"
-                   value={info.nickname}
-                   onChange={handleInfoChange}
-                   onBlur={checkNickname}
-                   placeholder="닉네임" />
-            <p className={`${account.help} ${nicknameMsg.startsWith('✅') ? account.ok : account.err}`}>{nicknameMsg}</p>
-          </div>
-
-          <div className={account.formRow}>
-            <label className={account.label}>이메일</label>
-            <input className={account.input} name="email"
-                   value={info.email}
-                   onChange={handleInfoChange}
-                   onBlur={checkEmail}
-                   placeholder="이메일" />
-            <p className={`${account.help} ${emailMsg.startsWith('✅') ? account.ok : account.err}`}>{emailMsg}</p>
-          </div>
-        </div>
-
-        <button type="submit" className={account.submit} disabled={submitDisabled}>
-          회원정보 수정
-        </button>
-      </form>
     </div>
-  </div>
-);}
+  );
+}
