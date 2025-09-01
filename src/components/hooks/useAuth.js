@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export default function useAuth() {
   const [user, setUser] = useState(null); // 사용자 정보 { id, role, nickname? }
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -31,24 +30,6 @@ export default function useAuth() {
   const isLoggedIn = !!user;       //관리자 
   const isMaster = user?.role === 'MASTER';
 
-  // 어떤 동작을 하기 전에 로그인 요구하는 래퍼
-  const requireLogin = (fn) => (...args) => {
-    if (!isLoggedIn) {
-      alert('로그인 해주세요');
-      navigate('/login', { replace: true, state: { from: location } });
-      return;
-    }
-    fn?.(...args);
-  };
 
-
-  const handleLogout = async () => {
-    try { await axios.post('http://localhost:8080/cal/member/logout', {}, { withCredentials: true }); } catch { }
-    localStorage.removeItem('loggedInUser');
-    setUser(null);
-    navigate('/');
-    alert('로그아웃 완료');
-  };
-
-  return { user, isLoggedIn, isMaster, requireLogin, handleLogout, loading };
+  return { user, isLoggedIn, isMaster, loading };
 }

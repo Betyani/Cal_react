@@ -176,27 +176,40 @@ export default function EditProfile() {
     if (changedNickname && !nicknameChecked) { setFormMessage('닉네임 중복 확인을 완료하세요.'); return; }
     if (changedEmail && !emailChecked) { setFormMessage('이메일 중복 확인을 완료하세요.'); return; }
 
-    try {
-      setLoading(true);
-      await axios.post(
-        'http://localhost:8080/cal/member/update',
-        {
-          id: info.id,
-          password: changingPassword ? pw.next : '', // 비번 미변경 시 서버가 무시
-          nickname: info.nickname,
-          email: info.email,
-          role: info.role,                            // 자기 수정은 서버에서 무시됨
-        },
-        { withCredentials: true }
-      );
+     try {
+     setLoading(true);
 
-      navigate('/'); // 조용히 이동 (팝업 X)
-    } catch (err) {
-      setFormMessage(err.response?.data?.message || '수정 실패. 잠시 후 다시 시도해주세요.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // ✅ 비번 안 바꾸면 password 필드 자체를 빼서 보냄
+    const payload = {
+      id: info.id,
+      nickname: info.nickname,
+      email: info.email,
+      role: info.role,
+    };
+    if (changingPassword) payload.password = pw.next;
+
+    const res = await axios.post(
+      'http://localhost:8080/cal/member/update',
+      payload,
+      { withCredentials: true }
+    );
+
+    // ✅ 성공하면 작은 창(알럿)으로 메시지 출력
+    alert(res.data?.message || '회원 정보가 수정되었습니다.');
+
+    // ✅ 새 세션 정보 다시 받아서 로컬에도 반영 (상단 닉네임 즉시 갱신용)
+    try {
+      const fresh = await axios.get('http://localhost:8080/cal/member/status', { withCredentials: true });
+      localStorage.setItem('loggedInUser', JSON.stringify(fresh.data));
+    } catch {}
+
+    navigate('/'); // 원하는 페이지로 이동
+  } catch (err) {
+    setFormMessage(err.response?.data?.message || '수정 실패. 잠시 후 다시 시도해주세요.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={account.wrap}>
