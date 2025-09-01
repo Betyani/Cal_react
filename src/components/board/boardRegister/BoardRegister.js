@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -7,15 +7,33 @@ export default function BoardRegister() {
     const [review, setReview] = useState({
         title: "",
         content: "",
-        writer: "",
     });
+    const [writer, setWriter] = useState("");
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        
+        const status = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/cal/member/status", { withCredentials: true })
+                console.log("서버 확인값:", response.data);
+                setWriter(response.data.nickname);
+
+            } catch (error) {
+                console.log("에러:", error);
+            }
+        } 
+
+        status();
+
+    }, [])
+    
 
 //등록버튼을 눌렀을 경우 실행
     const handleSubmit = async (e) => {
         e.preventDefault(); //제출 시 페이지 새로고침 방지
-        const finalReview = { ...review, productId: Number(productId) };
+        const finalReview = { ...review, productId: Number(productId), writer };
         
         try {
             console.log("보낼 값:", finalReview);
@@ -49,8 +67,7 @@ export default function BoardRegister() {
                     <textarea name="content" value={review.content} onChange={handleChange} required rows={5} cols={50} />
                 </div>
                 <div>
-                    <label>작성자: </label>
-                    <input type="text" name="writer" value={review.writer} onChange={handleChange} required />
+                    <label>작성자: {writer}</label>
                 </div>
                 <div>
                     <button type="submit">

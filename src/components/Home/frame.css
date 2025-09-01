@@ -35,64 +35,18 @@ body {
     margin-inline: auto;
 }
 
-/* 상단바 */
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.topbar-inner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0 !important;
-    /* MUI Toolbar padding 덮어쓰기 */
-}
-
-.brand {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: .2px;
-    margin-right: auto;
-    /* 왼쪽 정렬 후 오른쪽 공간 확보 */
-}
-
-.gnb a {
-    display: inline-block;
-    text-decoration: none;
-    color: var(--ink);
-    padding: 8px 10px;
-    border-radius: 8px;
-}
-
-.gnb a:hover {
-    background: var(--brand-weak);
-}
-
-.login-btn {
-    border-color: var(--brand) !important;
-    color: var(--brand) !important;
-}
-
-.login-btn:hover {
-    background: var(--brand-weak) !important;
-}
-
 /* 본문 */
 .main {
     padding: 28px 0 56px;
 }
 
 .section+.section {
-    margin-top: 40px;
+    margin-top: 50px;
 }
 
 .section-title {
     margin: 0 0 14px;
     font-size: 20px;
     font-weight: 800;
+    text-align: left;
 }

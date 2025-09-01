@@ -14,54 +14,54 @@
 
 /* 좌측 메뉴 링크 (Home, 회원가입, 로그인) */
 .nav-left .nav-link {
-  display: flex;
-  margin-right: 10px;
   text-decoration: none;
-  color: #333;
+  color: #2a7f6f;
+  padding: 0;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color .15s ease, transform .12s ease;
 }
 
 .nav-left .nav-link:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  color: #87cabe;
+  padding: 0;
 }
 
 /* 우측 메뉴 영역 (닉네임, 정보수정, 로그아웃 버튼) */
 .nav-right {
   display: flex;
-  margin-left: auto;
   align-items: center;
+  gap: 12px;
 }
 
 /* 닉네임 환영합니다 영역 */
 .user-info {
+  font-weight: 600;
   margin-right: 10px;
   font-weight: bold;
+  color: #666;
+  margin: 4px;
 }
 
 /* 공통 버튼 스타일: 정보수정, 로그아웃 모두 여기서 설정 */
 .nav-button {
-  margin-left: 19px;
-  padding: 7px 10px;
-  font-weight: bold;
+  padding: 7px 14px;
+  font-weight: 600;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   background-color: transparent;
+  text-decoration: none;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
-/* 정보수정 버튼 전용 (회색 톤) */
-.nav-button.info {
-  color: #007bff;
+.nav-button:hover {
+  color: #87cabe;
 }
 
-.nav-button.info:hover {
-  background-color: #e0f0ff;
-}
-
-/* 로그아웃 버튼 전용 (빨간 톤) */
-.nav-button.logout {
-  color: red;
-}
-
-.nav-button.logout:hover {
-  background-color: #ffe5e5;
+.logout {
+  color: rgb(255, 0, 0);
 }

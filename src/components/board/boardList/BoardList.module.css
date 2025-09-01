@@ -1,0 +1,200 @@
+.tableWrap {
+  margin: 24px auto 0;
+  max-width: 1100px;
+  padding: 0 12px;
+}
+
+/* 가로 스크롤 보호 */
+.tableScroll {
+  overflow-x: auto;
+  background: var(--panel, #fff);
+  border: 1px solid var(--line, #eaeaea);
+  border-radius: 12px;
+  box-shadow: var(--shadow, 0 8px 20px rgba(0,0,0,0.06));
+}
+
+/* 테이블 기본 */
+.boardTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 제목 칸 말줄임 처리에 유리 */
+}
+
+.boardTable th,
+.boardTable td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.boardTable thead th {
+  background: #f9fafb;
+  font-weight: 700;
+  text-align: center;
+}
+
+.center { text-align: center; }
+
+/* 제목 칸: 좌측 정렬 + 말줄임 */
+.titleCell { 
+  text-align: center; 
+}
+.titleText {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 행 hover */
+.row { cursor: pointer; }
+.row:hover td {
+  background: #f7fbff;
+}
+
+/* 빈 상태 */
+.empty {
+  text-align: center;
+  padding: 22px 12px;
+  color: #6b7280;
+}
+
+/* 버튼 공통 */
+.btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 4px;
+  transition: transform .05s ease, background .15s ease, filter .05s ease;
+}
+.btn:hover { background: #f9fafb; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); filter: brightness(.98); }
+
+
+.danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fff5f5;
+}
+.danger:hover { background: #ffe9e9; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 28px;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+.pagination .page {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: 
+    transform .15s ease,
+    box-shadow .15s ease,
+    background-color .15s ease,
+    border-color .15s ease
+    ;
+}
+
+.pagination .page.number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination .page.prev,
+.pagination .page.next {
+  padding: 0 14px;
+}
+
+.pagination .page:hover{
+  background: var(--brand-weak);
+  border-color: var(--brand-weak);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+}
+
+/* 현재 페이지 버튼 표시 */
+.pagination .page.active {
+  background: var(--brand);   /* 브랜드 컬러 배경 */
+  color: #fff;                /* 흰색 글씨 */
+  border-color: var(--brand);
+  cursor: default;            /* 클릭 불가 느낌 */
+}
+
+/* 모달 */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+.modal {
+  width: min(800px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0,0,0,.2);
+  overflow: hidden;
+}
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+}
+.modalTitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+.close {
+  border: 0;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.meta {
+  display: flex;
+  gap: 14px;
+  padding: 10px 16px 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+.modalBody {
+  padding: 12px 16px 0;
+}
+.content {
+  margin: 0;
+  font-family: inherit;
+  white-space: pre-wrap;  /* 줄바꿈 유지 */
+  word-break: break-word; /* 긴 단어 줄바꿈 */
+}
+.modalFooter {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  border-top: 1px solid #eee;
+  padding: 10px 16px;
+  margin-top: 12px;
+}

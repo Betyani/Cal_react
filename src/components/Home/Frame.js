@@ -18,7 +18,7 @@ export default function Frame() {
                 </section>
 
                 <section className="section">
-                    <h2 className="section-title">리뷰 리스트 {selectProduct && `- ${selectProduct.name}`}</h2>
+                    <h2 className="section-title">{selectProduct ? (`${selectProduct.name}`) : ("상품을 선택해주세요.")}</h2>
                     <BoardList productId={selectProduct?.id} />
                 </section>
             </main>

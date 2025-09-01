@@ -1,11 +1,65 @@
-.tabs {
+.container {
+  max-width: 720px;
+  margin: 0 auto 24px;
+  padding: 16px 16px;
+
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.06);
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "category category" "search sort";
+  column-gap: 12px;
+  row-gap: 14px;
+  align-items: center;
+}
+
+.categoryTabs {
+  grid-area: category;
   display: flex;
   flex-wrap: nowrap;
-  align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 8px 0;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
+}
+
+.search {
+  grid-area: search;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.search input {
+  width: min(100%, 420px);
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 14px;
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: #9ca3af;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
+.sortTabs {
+  grid-area: sort;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  gap: 0px;
+  width: fit-content;
+  margin-left: auto;
+  padding: 3px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
 }
 
 .tabButton {
@@ -19,9 +73,19 @@
 }
 
 .tabButton.active {
-  background: #333;
+  background: var(--brand);
   color: white;
   font-weight: bold;
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product h2 {
+  margin: 0;
 }
 
 .listWrap {
@@ -29,10 +93,6 @@
   grid-template-columns: repeat(4, minmax(0,1fr));
   gap: 16px; /* 카드 사이 간격 */
   margin-top: 20px;
-}
-
-.product {
-  display: flex;
 }
 
 .card {
@@ -123,6 +183,11 @@
 .btn:active { transform: translateY(0); box-shadow: none; }
 .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,.35); }
 
+.btn.register {
+  margin-left: auto;   
+  align-self: center;
+}
+
 /* 강조(Primary) – 리뷰 쓰기 */
 .primary {
   background: var(--brand);
@@ -147,12 +212,6 @@
   border-color: rgba(239,68,68,.5);
 }
 .danger:hover { background: rgba(239,68,68,.08); }
-
-.search input {
-  padding: 8px;
-  width: 300px;
-  margin-bottom: 20px;
-}
 
 .pagination {
   display: flex;
@@ -199,4 +258,12 @@
   border-color: var(--brand-weak);
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+}
+
+/* 현재 페이지 버튼 표시 */
+.pagination .page.active {
+  background: var(--brand);   /* 브랜드 컬러 배경 */
+  color: #fff;                /* 흰색 글씨 */
+  border-color: var(--brand);
+  cursor: default;            /* 클릭 불가 느낌 */
 }
