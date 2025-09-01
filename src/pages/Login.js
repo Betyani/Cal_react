@@ -68,11 +68,8 @@ export default function Login() {
         </form>
 
 
-<<<<<<< HEAD
 
         {/* 👇 추가: 아이디/비번 찾기 하단 액션 */}
-=======
->>>>>>> e3ea7b61f86542c4fc05bec73a6266c5de13fe89
         <div className={account.subActions}>
           <button
             type="button"
