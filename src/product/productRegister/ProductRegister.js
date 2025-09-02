@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import styles from './productRegister.module.css';
 
 
 export default function ProductRegister() {
@@ -75,7 +76,7 @@ export default function ProductRegister() {
             return;
         }
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg"]
+        const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg"]
 
         if (!allowedTypes.includes(uploadFile.type)) {
             alert("❌ 이미지 파일만 업로드 가능합니다.");
@@ -106,19 +107,19 @@ export default function ProductRegister() {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <h2>상품 등록</h2>
-                <div>
-                    <label>상품명: </label>
-                    <input type="text" name="name" value={product.name} onChange={handleChange} required />
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <h2 className={styles.label}>상품 등록</h2>
+                <div className={styles.section}>
+                    <label>상품명</label>
+                    <input className={styles.name} type="text" name="name" value={product.name} onChange={handleChange} required />
                 </div>
-                <div>
-                    <label>가격: </label>
-                    <input type="text" name="price" value={product.price} onChange={handleChange} required />
+                <div className={styles.section}>
+                    <label>가격</label>
+                    <input className={styles.price} type="text" name="price" value={product.price} onChange={handleChange} required placeholder="숫자만 입력해주세요." />
                 </div>
-                <div>
-                    <label>카테고리: </label>
-                    <select id="categorySelect" name="category" value={product.category} onChange={handleChange}>
+                <div className={styles.section}>
+                    <label>카테고리</label>
+                    <select className={styles.category} id="categorySelect" name="category" value={product.category} onChange={handleChange} required>
                         <option value="">카테고리를 선택하세요</option>
                         <option value="도시락/조리면">도시락/조리면</option>
                         <option value="삼각김밥/김밥">삼각김밥/김밥</option>
@@ -128,12 +129,20 @@ export default function ProductRegister() {
                         <option value="기타">기타</option>
                     </select>
                 </div>
-                <div>
-                    <input type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
+                <div className={styles.section}>
+                    <label>이미지</label>
+                    <input className={styles.image} type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
+                </div>
+                <div className={`${styles.section} ${styles.image}`}>
+                    {!file && (
+                        <small className={styles.help}>
+                            .jpg, .jpeg, .png, .gif 파일만 가능합니다.
+                        </small>
+                    )}
                     {previewUrl && <img src={previewUrl} width="200" />}
                 </div>
-                <div>
-                    <button type="submit">
+                <div className={styles.section}>
+                    <button className={styles.button} type="submit">
                         등록
                     </button>
                 </div>

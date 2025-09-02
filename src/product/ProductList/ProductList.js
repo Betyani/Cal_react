@@ -149,7 +149,7 @@ export default function ProductList({ onSelect }) {
                 </button>
 
                 {/* 수정/삭제: 관리자 또는 본인 소유일 때만 보이게 */}
-                {(isAdmin || (user?.id && user.id === ownerOf(p))) && (
+                {isAdmin && (
                   <>
                     <button className={`${styles.btn} ${styles.outline}`}
                       onClick={(e) => { e.stopPropagation(); navigate(`/product/edit/${p.id}`); }}>

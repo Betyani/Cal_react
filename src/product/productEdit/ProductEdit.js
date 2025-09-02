@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import styles from './productEdit.module.css';
 
 function ProductEdit() {
   const { productId } = useParams();
@@ -101,7 +102,7 @@ function ProductEdit() {
         updatedProduct
       );
       alert("✅ 상품이 성공적으로 수정되었습니다.");
-      navigate("/products/list");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("수정 실패", error);
       setMessage("❌ 상품 수정 실패");
@@ -109,35 +110,39 @@ function ProductEdit() {
   };
 
   return (
-    <form onSubmit={handleUpdate}>
-      <h2>상품 수정</h2>
+    <form className={styles.form} onSubmit={handleUpdate}>
+      <h2 className={styles.label}>상품 수정</h2>
       {message && <p>{message}</p>}
 
-      <div>
+      <div className={styles.section}>
         <label>이름:</label>
         <input
+          className={styles.name}
           type="text"
           name="name"
           value={product.name}
           onChange={handleChange}
-          required
+          requireds
         />
       </div>
 
-      <div>
+      <div className={styles.section}>
         <label>가격:</label>
         <input
+          className={styles.price}
           type="text"
           name="price"
           value={product.price}
           onChange={handleChange}
+          placeholder="숫자만 입력해주세요."
           required
         />
       </div>
 
-      <div>
+      <div className={styles.section}>
         <label>카테고리:</label>
         <select
+          className={styles.category}
           name="category"
           value={product.category}
           onChange={handleChange}
@@ -155,13 +160,13 @@ function ProductEdit() {
 
       {/* 👉 URL 입력 대신 파일 선택 */}
       {/* 👉 파일 선택 제한 (accept) 추가 */}
-      <div>
+      <div className={styles.section}>
         <label>새 이미지 선택:</label>
-        <input type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
+        <input className={styles.image} type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
       </div>
 
       {/* 👉 미리보기 or 기존 이미지 표시 */}
-      <div>
+      <div className={`${styles.section} ${styles.image}`}>
         {previewUrl ? (
           <img src={previewUrl} alt="미리보기" width="200" />
         ) : (
@@ -175,7 +180,9 @@ function ProductEdit() {
         )}
       </div>
 
-      <button type="submit">수정하기</button>
+      <div className={styles.section}>
+        <button className={styles.button} type="submit">수정하기</button>
+      </div>
     </form>
   );
 }

@@ -11,6 +11,8 @@ export default function BoardEdit() {
   const [content, setContent] = useState('');
   const [writer, setWriter] = useState('');
   const [loading, setLoading] = useState(false);// 로딩 표시용임
+  const maxLength = 500;
+
 
   useEffect(() => {
     axios.get(`http://localhost:8080/cal/board/detail/${id}`)
@@ -26,7 +28,7 @@ export default function BoardEdit() {
       });
   }, [id]);
 
-//수정 부탁 형식
+  //수정 부탁 형식
   const handleUpdate = () => {
     if (!title.trim() || !content.trim()) {
       alert('⚠️ 제목과 내용을 모두 입력하세요!');
@@ -49,27 +51,31 @@ export default function BoardEdit() {
   };
 
   return (
-    <div className={styles.container}>
-      <h2>게시글 수정</h2>
+    <div className={styles.form}>
+      <h2 className={styles.label}>리뷰 수정</h2>
       {loading && <p>수정 중...</p>}
 
-      <label>제목:
-        <input value={title} onChange={(e) => setTitle(e.target.value)} // 내용 저장
-         /> 
-      </label>
-      <br />
+      <div className={styles.section}>
+        <label>제목</label>
+        <input className={styles.title} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} required />
+      </div>
 
-      <label>내용:
-        <textarea value={content} onChange={(e) => setContent(e.target.value)} />
-      </label>
-      <br />
+      <div className={styles.section}>
+        <label>내용</label>
+        <textarea className={styles.content} value={content} onChange={(e) => setContent(e.target.value)} maxLength={maxLength} required />
+      </div>
 
-      <label>작성자:
-        <input value={writer} readOnly />
-      </label>
-      <br />
+      <div className={styles.counter}>
+        {content.length} / {maxLength}자
+      </div>
 
-      <button className={styles.updateButton} onClick={handleUpdate}>수정하기</button>
+      <div className={styles.section}>
+        <label>작성자: {writer}</label>
+      </div>
+
+      <div className={styles.section}>
+        <button className={styles.button} onClick={handleUpdate}>수정하기</button>
+      </div>
     </div>
   );
 }

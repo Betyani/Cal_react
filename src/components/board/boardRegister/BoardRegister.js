@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import styles from './boardRegister.module.css';
 
 export default function BoardRegister() {
     const { productId } = useParams();
@@ -11,6 +12,7 @@ export default function BoardRegister() {
     const [writer, setWriter] = useState("");
 
     const navigate = useNavigate();
+    const maxLength = 500;
 
     useEffect(() => {
         
@@ -56,21 +58,24 @@ export default function BoardRegister() {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <h2>리뷰 등록</h2>
-                <div>
-                    <label>제목: </label>
-                    <input type="text" name="title" value={review.title} onChange={handleChange} required />
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <h2 className={styles.label}>리뷰 등록</h2>
+                <div className={styles.section}>
+                    <label>제목</label>
+                    <input className={styles.title} type="text" name="title" value={review.title} onChange={handleChange} maxLength={100} required />
                 </div>
-                <div>
-                    <label>내용: </label>
-                    <textarea name="content" value={review.content} onChange={handleChange} required rows={5} cols={50} />
+                <div className={styles.section}>
+                    <label>내용</label>
+                    <textarea className={styles.content} name="content" value={review.content} onChange={handleChange} required rows={5} cols={50} maxLength={maxLength} />
                 </div>
-                <div>
+                <div className={styles.counter}>
+                    {review.content.length} / {maxLength}자
+                </div>
+                <div className={styles.section}>
                     <label>작성자: {writer}</label>
                 </div>
-                <div>
-                    <button type="submit">
+                <div className={styles.section}>
+                    <button className={styles.button} type="submit">
                         등록
                     </button>
                 </div>

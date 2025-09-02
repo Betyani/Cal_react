@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from './BoardList.module.css';
+import useAuth from "../../hooks/useAuth";
 
 export default function BoardList({ productId }) {
     const [review, setReview] = useState([]);
@@ -11,6 +12,10 @@ export default function BoardList({ productId }) {
 
     const [open, setOpen] = useState(false);
     const [active, setActive] = useState(null);
+
+    const { isMaster, user } = useAuth();
+    const isAdmin = isMaster;
+    const isUser = user;
 
     useEffect(() => {
 
@@ -60,26 +65,40 @@ export default function BoardList({ productId }) {
         setActive(null);
     };
 
+    useEffect(() => {
+        if (open) {
+            const prev = document.body.style.overflow;  // 기존값 백업
+            document.body.style.overflow = 'hidden';    // 배경 스크롤 잠금
+            return () => { document.body.style.overflow = prev; }; // 복원
+        }
+    }, [open]);
+
 
     return (
         <section className={styles.tableWrap}>
 
             <div className={styles.tableScroll}>
                 <table className={styles.boardTable}>
+                    <colgroup>
+                        <col className={styles.colNum} />
+                        <col className={styles.colTitle} />
+                        <col className={styles.colWriter} />
+                        <col className={styles.colTime} />
+                    </colgroup>
+
                     <thead>
                         <tr>
-                            <th style={{ width: 80 }}>글 번호</th>
+                            <th>글 번호</th>
                             <th>제목</th>
-                            <th style={{ width: 140 }}>작성자</th>
-                            <th style={{ width: 170 }}>작성시간</th>
-                            <th style={{ width: 140 }}></th>
+                            <th>작성자</th>
+                            <th>작성시간</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {review.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className={styles.empty}>리뷰가 없습니다. 첫 리뷰를 남겨보세요!</td>
+                                <td colSpan={4} className={styles.empty}>리뷰가 없습니다. 첫 리뷰를 남겨보세요!</td>
                             </tr>
                         ) : (
                             review.map((item, index) => (
@@ -90,14 +109,6 @@ export default function BoardList({ productId }) {
                                     </td>
                                     <td className={styles.center}>{item.writer}</td>
                                     <td className={styles.center}>{item.createTime}</td>
-                                    <td className={styles.center} onClick={(e) => e.stopPropagation()}>
-                                        <button className={`${styles.btn} ${styles.outline}`} onClick={() => navigate(`/board/edit/${item.id}`)}>
-                                            수정
-                                        </button>
-                                        <button className={`${styles.btn} ${styles.danger}`} onClick={() => navigate(`/board/delete/${item.id}`)}>
-                                            삭제
-                                        </button>
-                                    </td>
                                 </tr>
                             ))
                         )}
@@ -143,18 +154,16 @@ export default function BoardList({ productId }) {
                             <pre className={styles.content}>{active.content}</pre>
                         </div>
                         <div className={styles.modalFooter}>
-                            <button
-                                className={`${styles.btn} ${styles.outline}`}
-                                onClick={() => { closeModal(); navigate(`/board/edit/${active.id}`); }}
-                            >
-                                수정
-                            </button>
-                            <button
-                                className={`${styles.btn} ${styles.danger}`}
-                                onClick={() => { closeModal(); navigate(`/board/delete/${active.id}`); }}
-                            >
-                                삭제
-                            </button>
+                            {(isAdmin || (isUser?.nickname === active.writer)) && (
+                                <>
+                                    <button className={`${styles.btn} ${styles.outline}`} onClick={() => navigate(`/board/edit/${active.id}`)}>
+                                        수정
+                                    </button>
+                                    <button className={`${styles.btn} ${styles.danger}`} onClick={() => navigate(`/board/delete/${active.id}`)}>
+                                        삭제
+                                    </button>
+                                </>
+                            )}
                             <button className={styles.btn} onClick={closeModal}>닫기</button>
                         </div>
                     </div>

@@ -12,7 +12,7 @@ import FindPassword from './pages/FindPassword';
 import ProductList from './product/productList/ProductList';
 import ProductRegister from './product/productRegister/ProductRegister';
 import ProductDelete from './product/productDelete/ProductDelete';
-import ProductEdit from './product/productEdit/ProductEdit'; 
+import ProductEdit from './product/productEdit/ProductEdit';
 
 // 2차
 import BoardList from './components/board/boardList/BoardList';
@@ -21,6 +21,7 @@ import BoardEdit from './components/board/boardEdit/BoardEdit';
 import BoardRegister from './components/board/boardRegister/BoardRegister';
 import Frame from './components/Home/Frame';
 import BoardDelete from './components/board/boardDelete/BoardDelete';
+import ErrorPage from './components/Home/ErrorPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           {/* 홈 */}
           <Route path="/" element={<Frame />} />{/* 여기를 Home으로 바꿈 */}
+          <Route path="*" element={<ErrorPage />} />{/* 여기를 Home으로 바꿈 */}
 
 
           {/* 회원 */}
@@ -38,16 +40,16 @@ function App() {
           <Route path='/profile/edit' element={<ProfileEdit />} />
           <Route path='/find-id' element={<FindId />} />
           <Route path='/find-password' element={<FindPassword />} />
-          
+
 
           {/* 상품 */}
-         
+
           <Route path="/products/list" element={<ProductList />} />
           <Route path="/products/new" element={<ProductRegister />} />
           <Route path="/product/delete/:id" element={<ProductDelete />} />
           <Route path="/product/edit/:productId" element={<ProductEdit />} />
           <Route path="/product/register" element={<ProductRegister />} />
-    
+
 
           {/* 게시판 */}
           <Route path="/board/list" element={<BoardList />} />
@@ -56,9 +58,9 @@ function App() {
           <Route path="/board/edit/:id" element={<BoardEdit />} />
           <Route path="/board/register/:productId" element={<BoardRegister />} />
         </Routes>
-      
-        </div>
-         </Router>
+
+      </div>
+    </Router>
   );
 }
 
