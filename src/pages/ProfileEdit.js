@@ -1,4 +1,3 @@
-// src/pages/EditProfile.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -165,17 +164,6 @@ export default function EditProfile() {
       return;
     }
 
-    if (changingPassword) {
-      if (!validPw) { setFormMessage('새 비밀번호 형식이 올바르지 않습니다.'); 
-        return; }
-      if (pw.next !== pw.confirm) { setFormMessage('새 비밀번호가 일치하지 않습니다.');
-         return; }
-      if (!currentChecked) { setFormMessage('현재 비밀번호 확인을 완료하세요.');
-         return; }
-    }
-    if (changedNickname && !nicknameChecked) { setFormMessage('닉네임 중복 확인을 완료하세요.'); return; }
-    if (changedEmail && !emailChecked) { setFormMessage('이메일 중복 확인을 완료하세요.'); return; }
-
      try {
      setLoading(true);
 
@@ -194,7 +182,7 @@ export default function EditProfile() {
       { withCredentials: true }
     );
 
-    // ✅ 성공하면 작은 창(알럿)으로 메시지 출력
+    // ✅ 성공하면 작은 창으로 메시지 출력
     alert(res.data?.message || '회원 정보가 수정되었습니다.');
 
     // ✅ 새 세션 정보 다시 받아서 로컬에도 반영 (상단 닉네임 즉시 갱신용)
