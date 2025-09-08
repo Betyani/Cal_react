@@ -1,5 +1,5 @@
 .container {
-  max-width: 720px;
+  max-width: 810px;
   margin: 0 auto 24px;
   padding: 16px 16px;
 
@@ -171,7 +171,7 @@
   line-height: 1;
   border-radius: 9999px;       /* 알약 형태 */
   border: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--panel);
   color: var(--ink);
   cursor: pointer;
 
