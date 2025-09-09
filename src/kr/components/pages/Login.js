@@ -22,12 +22,12 @@ export default function Login() {
         
       );
       if (response.status === 200) {
-        alert('ログインしました。');
+        alert('로그인 성공');
         navigate('/', { replace: true });
         localStorage.setItem('loggedInUser', JSON.stringify(response.data)); //로그인 성공 시 로컬 저장
       }
     } catch {
-      alert('IDまたはパスワードが正しくありません。');
+      alert('로그인 실패');
       localStorage.removeItem('loggedInUser');
     }
     
@@ -36,10 +36,10 @@ export default function Login() {
   return (
     <div className={account.wrap}>
       <div className={account.card}>
-        <h2 className={account.title}>ログイン</h2>
+        <h2 className={account.title}>로그인</h2>
         <form onSubmit={handleLogin} className={account.form}>
           <div className={account.formRow}>
-            <label className={account.label}>ユーザーID</label>
+            <label className={account.label}>아이디</label>
             <input
               type="text"
               name="id"
@@ -47,11 +47,11 @@ export default function Login() {
               onChange={handleChange}
               required
               className={account.input}
-              placeholder="ユーザーID"
+              placeholder="아이디"
             />
           </div>
           <div className={account.formRow}>
-            <label className={account.label}>パスワード</label>
+            <label className={account.label}>비밀번호</label>
             <input
               type="password"
               name="pw"
@@ -59,11 +59,11 @@ export default function Login() {
                onChange={ handleChange}
               required
               className={account.input}
-              placeholder="パスワード"
+              placeholder="비밀번호"
             />
           </div>
           <button type="submit" className={account.button}>
-            ログイン
+            로그인
           </button>
         </form>
 
@@ -76,7 +76,7 @@ export default function Login() {
             className={account.ghostButton}
             onClick={() => navigate('/find-id')}
           >
-            IDを忘れた方
+            아이디 찾기
           </button>
           <span className={account.divider} />
           <button
@@ -84,7 +84,7 @@ export default function Login() {
             className={account.ghostButton}
             onClick={() => navigate('/find-password')}
           >
-            パスワードを忘れた方
+            비밀번호 찾기
           </button>
         </div>
       </div>

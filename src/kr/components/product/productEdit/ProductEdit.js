@@ -27,7 +27,7 @@ function ProductEdit() {
         setProduct(res.data);  // 👉 객체 전체 저장
       })
       .catch((err) => {
-        setMessage("❌ 商品情報がありません。");
+        setMessage("❌ 상품 정보를 불러오지 못했습니다.");
         console.error(err);
       });
   }, [productId]);
@@ -53,13 +53,13 @@ function ProductEdit() {
     // 1) 파일 타입 검증 (이미지 파일 JPG, PNG, GIF만 허용)
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowedTypes.includes(newFile.type)) {
-      alert("❌ 画像ファイルのみアップロードできます。");
+      alert("❌ JPG, PNG, GIF 형식만 업로드 가능합니다.");
       e.target.value = ""; // input 초기화
       return;
     }
     // 2) 파일 용량 제한 (2MB 이하 예시)
     if (newFile.size > 2 * 1024 * 1024) {
-      alert("❌ ファイルの容量は2MB以下のみアップロードできます。");
+      alert("❌ 파일 크기는 2MB 이하만 가능합니다.");
       e.target.value = ""; // input 초기화
       return;
     }
@@ -90,7 +90,7 @@ function ProductEdit() {
         fileName = fileUploadResponse.data.fileName;  // 👉 새 파일명
       } catch (error) {
         console.error("업로드 실패", error);
-        alert("画像のアップロードに失敗しました。");
+        alert("이미지 업로드 실패");
         return;
       }
     }
@@ -101,21 +101,21 @@ function ProductEdit() {
         `http://localhost:8080/cal/product/update/${productId}`,
         updatedProduct
       );
-      alert("✅ 商品情報が更新されました");
+      alert("✅ 상품이 성공적으로 수정되었습니다.");
       navigate("/", { replace: true });
     } catch (error) {
       console.error("수정 실패", error);
-      setMessage("❌ 商品編集に失敗しました。");
+      setMessage("❌ 상품 수정 실패");
     }
   };
 
   return (
     <form className={styles.form} onSubmit={handleUpdate}>
-      <h2 className={styles.label}>商品編集</h2>
+      <h2 className={styles.label}>상품 수정</h2>
       {message && <p>{message}</p>}
 
       <div className={styles.section}>
-        <label>商品名</label>
+        <label>이름</label>
         <input
           className={styles.name}
           type="text"
@@ -127,20 +127,20 @@ function ProductEdit() {
       </div>
 
       <div className={styles.section}>
-        <label>価格</label>
+        <label>가격</label>
         <input
           className={styles.price}
           type="text"
           name="price"
           value={product.price}
           onChange={handleChange}
-          placeholder="数字のみ"
+          placeholder="숫자만 입력해주세요."
           required
         />
       </div>
 
       <div className={styles.section}>
-        <label>カテゴリー</label>
+        <label>카테고리</label>
         <select
           className={styles.category}
           name="category"
@@ -148,21 +148,20 @@ function ProductEdit() {
           onChange={handleChange}
           required
         >
-          <option value="">カテゴリーを選択してください</option>
-          <option value="お弁当">お弁当</option>
-          <option value="カップラーメン">カップラーメン</option>
-          <option value="おにぎり">おにぎり</option>
-          <option value="サンドイッチ">サンドイッチ</option>
-          <option value="飲み物">飲み物</option>
-          <option value="アイスクリーム">アイスクリーム</option>
-          <option value="お菓子">お菓子</option>
+          <option value="">-- 카테고리 선택 --</option>
+          <option value="도시락/조리면">도시락/조리면</option>
+          <option value="삼각김밥/김밥">삼각김밥/김밥</option>
+          <option value="샌드위치/햄버거">샌드위치/햄버거</option>
+          <option value="음료수/아이스크림">음료수/아이스크림</option>
+          <option value="과자/디저트">과자/디저트</option>
+          <option value="기타">기타</option>
         </select>
       </div>
 
       {/* 👉 URL 입력 대신 파일 선택 */}
       {/* 👉 파일 선택 제한 (accept) 추가 */}
       <div className={styles.section}>
-        <label>新しい画像を選択</label>
+        <label>새 이미지 선택</label>
         <input className={styles.image} type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
       </div>
 
@@ -182,7 +181,7 @@ function ProductEdit() {
       </div>
 
       <div className={styles.section}>
-        <button className={styles.button} type="submit">編集</button>
+        <button className={styles.button} type="submit">수정하기</button>
       </div>
     </form>
   );

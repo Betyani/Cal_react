@@ -89,11 +89,11 @@ export default function EditProfile() {
       else {
         const ok = PW_POLICY.test(value);
         setValidPw(ok);
-        setPwMsg(ok ? '✅ 強力なパスワード' : '❌ 英字・数字・記号を含む8文字以上');
+        setPwMsg(ok ? '✅ 강력한 비밀번호' : '❌ 영문+숫자+특수문자 포함 8자 이상');
       }
     }
     if (next.next && next.confirm) {
-      setMatchMsg(next.next === next.confirm ? '✅ 新しいパスワードが一致しています。' : '❌ 新しいパスワードが一致していません。');
+      setMatchMsg(next.next === next.confirm ? '✅ 새 비밀번호가 일치합니다.' : '❌ 새 비밀번호가 일치하지 않습니다.');
     } else {
       setMatchMsg('');
     }

@@ -20,11 +20,11 @@ export default function ProductDelete() {
                     params: { id }
                 });
                 console.log("삭제 성공");
-                alert("正常に削除されました。");
+                alert("삭제 성공");
                 navigate("/", { replace: true });
             } catch (error) {
                 console.log("실패", error);
-                alert("削除に失敗しました。");
+                alert("삭제 실패");
                 navigate("/", { replace: true });
             }
         };

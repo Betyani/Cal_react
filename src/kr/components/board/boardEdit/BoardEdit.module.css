@@ -1,0 +1,93 @@
+/* 카드형 폼: 가로 가운데 + 적당한 폭 + 그림자 */
+.form {
+    width: min(100% - 48px, 720px);
+    /* 좌우 여백 느껴지게 */
+    margin: 50px auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+}
+
+/* 제목 */
+.label {
+    margin: 0 0 16px;
+    font-size: 22px;
+    text-align: center;
+    color: var(--ink);
+}
+
+/* 각 입력 섹션: 세로로 쌓고 간격 주기 */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+/* 라벨은 굵게(전역 라벨을 건드리지 않기 위해 여기서만) */
+.section>label {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.title,
+.content {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .12s ease;
+}
+
+.content {
+    height: 160px;
+    overflow: hidden;
+    resize: none;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .12s ease;
+}
+
+.counter {
+  font-size: 12px;
+  color: var(--ink-dim);
+  text-align: right;      /* 오른쪽 정렬 */
+}
+
+/* 제출 버튼 */
+.button {
+    align-self: center;
+    /* 버튼을 섹션 중앙에 */
+    padding: 12px 18px;
+    font-weight: 800;
+    border-radius: 12px;
+    border: 1px solid var(--brand);
+    background: var(--brand);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color .15s ease, transform .12s ease, filter .15s ease, box-shadow .15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 1px 1px rgba(0, 0, 0, .04);
+    margin-top: 6px;
+}
+
+/* 버튼 호버/액티브 */
+.button:hover {
+    filter: brightness(1.25);
+    transform: translateY(-1px);
+}
+
+.button:active {
+    filter: brightness(.92);
+    transform: translateY(0);
+}

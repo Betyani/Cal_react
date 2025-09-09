@@ -41,7 +41,7 @@ export default function Register() {
     const ok = pw_POLICY.test(value);
     setValidationMessage((prev) => ({
       ...prev,
-      pw: value ? (ok ? '✅ 強力なパスワード' : '❌ 英字・数字・記号を含む8文字以上') : ''
+      pw: value ? (ok ? '✅ 강력한 비밀번호' : '❌ 영문+숫자+특수문자 포함 8자 이상') : ''
     }));
     setValid((prev) => ({ ...prev, pw: ok }));
   };
@@ -58,11 +58,11 @@ export default function Register() {
     if (name === 'id') {
       setIdChecked(false);
       setIdMessage('');
-    }
+    } 
     if (name === 'nickname') {
       setNicknameChecked(false);
       setNicknameMessage('');
-    }
+    } 
     if (name === 'email') {
       setEmailChecked(false);
       setEmailMessage('');
@@ -78,7 +78,7 @@ export default function Register() {
       valid.pw && idChecked && nicknameChecked && emailChecked && form.name.trim();
 
     if (!ready) {
-      alert('入力形式の確認と重複チェックを完了してください。');
+      alert('입력 형식 및 중복 확인을 완료해주세요.');
       return;
     }
 
@@ -93,24 +93,24 @@ export default function Register() {
           email: form.email.trim()
         }
       );
-      alert('会員登録が完了しました。');
+      alert('회원가입 성공');
       navigate('/login');
     } catch (error) {
       console.error('❌ 회원가입 실패:', error);
-      alert('会員登録に失敗しました。');
+      alert('회원가입 실패');
     }
   };
-  console.log("중복확인 상태:", idChecked, nicknameChecked, emailChecked);
+console.log("중복확인 상태:", idChecked, nicknameChecked, emailChecked);
 
   return (
     <div className={account.wrap}>
       <div className={account.card}>
-        <h2 className={account.title}>会員登録</h2>
+        <h2 className={account.title}>회원가입</h2>
 
         <form onSubmit={handleRegister} className={account.form}>
           {/* 아이디 */}
           <div className={account.formRow}>
-            <label className={account.label}>ユーザーID</label>
+            <label className={account.label}>아이디</label>
             <input
               type="text"
               name="id"
@@ -118,7 +118,7 @@ export default function Register() {
               onChange={handleChange}
               required
               className={account.input}
-              placeholder="英字と数字を含む4〜12文字"
+              placeholder="아이디"
             />
             <button
               type="button"
@@ -126,12 +126,12 @@ export default function Register() {
               onClick={async () => {
                 const idCheck = form.id.trim();
                 if (!idCheck) {
-                  setIdMessage('⚠️ ユーザーIDを入力してください');
+                  setIdMessage('⚠️ 아이디를 먼저 입력하세요.');
                   setIdChecked(false);
                   return;
                 }
                 if (!id_POLICY.test(idCheck)) {
-                  setIdMessage('❌ 4〜12文字で、英字と数字を含めてください。');
+                  setIdMessage('❌ 영문+숫자 4~12자 입력');
                   setIdChecked(false);
                   return;
                 }
@@ -149,7 +149,7 @@ export default function Register() {
                 }
               }}
             >
-              確認
+              아이디 중복 확인
             </button>
           </div>
           {idMessage && (
@@ -160,7 +160,7 @@ export default function Register() {
 
           {/* 비밀번호 */}
           <div className={account.formRow}>
-            <label className={account.label}>パスワード</label>
+            <label className={account.label}>비밀번호</label>
             <div className={account.inlineRow}>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -169,22 +169,22 @@ export default function Register() {
                 onChange={handleChange}
                 required
                 className={account.input}
-                placeholder="英字・数字・記号を含む8文字以上"
+                placeholder="영문+숫자+특수문자 포함 8자 이상"
               />
               <button
                 type="button"
                 className={account.inlineButton}
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? '非表示' : '表示'}
+                {showPassword ? '숨김' : '보기'}
               </button>
             </div>
+            <p style={{ color: valid.pw ? 'green' : 'red' }}>{validationMessage.pw}</p>
           </div>
-          <p style={{ color: valid.pw ? 'green' : 'red' }}>{validationMessage.pw}</p>
 
           {/* 이름 */}
           <div className={account.formRow}>
-            <label className={account.label}>名前</label>
+            <label className={account.label}>이름</label>
             <input
               type="text"
               name="name"
@@ -192,13 +192,13 @@ export default function Register() {
               onChange={handleChange}
               required
               className={account.input}
-              placeholder="名前"
+              placeholder="이름"
             />
           </div>
 
           {/* 닉네임 */}
           <div className={account.formRow}>
-            <label className={account.label}>ニックネーム</label>
+            <label className={account.label}>닉네임</label>
             <input
               type="text"
               name="nickname"
@@ -206,7 +206,7 @@ export default function Register() {
               onChange={handleChange}
               required
               className={account.input}
-              placeholder="ニックネーム"
+              placeholder="닉네임"
             />
             <button
               type="button"
@@ -214,17 +214,17 @@ export default function Register() {
               onClick={async () => {
                 const nicknameCheck = form.nickname;
                 if (!nicknameCheck.trim()) {
-                  setNicknameMessage('⚠️ 先にニックネームを入力してください。');
+                  setNicknameMessage('⚠️ 닉네임을 먼저 입력하세요.');
                   setNicknameChecked(false);
                   return;
                 }
                 if (/\s/.test(nicknameCheck)) {
-                  setNicknameMessage('❌ 空白は使用できません。');
+                  setNicknameMessage('❌ 공백은 사용할 수 없습니다.');
                   setNicknameChecked(false);
                   return;
                 }
                 if (!nickname_POLICY.test(nicknameCheck)) {
-                  setNicknameMessage('❌ 2〜12文字で、記号を使わずに入力してください。');
+                  setNicknameMessage('❌ 특수문자 없이 2~12자 입력');
                   setNicknameChecked(false);
                   return;
                 }
@@ -242,7 +242,7 @@ export default function Register() {
                 }
               }}
             >
-              確認
+              중복 확인
             </button>
 
             <p className={`${account.help} ${nicknameChecked ? account.ok : account.err}`}>
@@ -252,7 +252,7 @@ export default function Register() {
 
           {/* 이메일 */}
           <div className={account.formRow}>
-            <label className={account.label}>メールアドレス</label>
+            <label className={account.label}>이메일</label>
             <input
               type="email"
               name="email"
@@ -269,12 +269,12 @@ export default function Register() {
               onClick={async () => {
                 const emailCheck = form.email.trim();
                 if (!emailCheck) {
-                  setEmailMessage('⚠️ 先にメールアドレスを入力してください。');
+                  setEmailMessage('⚠️ 이메일을 먼저 입력하세요.');
                   setEmailChecked(false);
                   return;
                 }
                 if (!email_POLICY.test(emailCheck)) {
-                  setEmailMessage('❌ メールアドレスを正しく入力してください。');
+                  setEmailMessage('❌ 이메일 형식이 올바르지 않습니다.');
                   setEmailChecked(false);
                   return;
                 }
@@ -292,7 +292,7 @@ export default function Register() {
                 }
               }}
             >
-              確認
+              이메일 중복 확인
             </button>
 
             <p className={`${account.help} ${emailChecked ? account.ok : account.err}`}>{emailMessage}</p>
@@ -302,14 +302,14 @@ export default function Register() {
           <button
             type="submit"
             disabled={
-              !valid.pw ||
-              !idChecked ||
-              !nicknameChecked ||
-              !emailChecked ||
+              !valid.pw ||     
+              !idChecked ||    
+              !nicknameChecked || 
+              !emailChecked ||    
               !form.name.trim()   // 이름 입력
             }
           >
-            会員登録
+            회원가입
           </button>
         </form>
       </div>

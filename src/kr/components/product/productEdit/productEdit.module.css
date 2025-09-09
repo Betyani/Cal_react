@@ -1,0 +1,96 @@
+/* 카드형 폼: 가로 가운데 + 적당한 폭 + 그림자 */
+.form {
+    width: min(100% - 48px, 720px);
+    /* 좌우 여백 느껴지게 */
+    margin: 50px auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+}
+
+/* 제목 */
+.label {
+    margin: 0 0 16px;
+    font-size: 22px;
+    text-align: center;
+    color: var(--ink);
+}
+
+/* 각 입력 섹션: 세로로 쌓고 간격 주기 */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+/* 라벨은 굵게(전역 라벨을 건드리지 않기 위해 여기서만) */
+.section>label {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* 텍스트/셀렉트 공통 스타일 */
+.name,
+.price,
+.category {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel);
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .12s ease;
+}
+
+/* 포커스 피드백 */
+.name:focus,
+.price:focus,
+.category:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(42, 127, 111, .12);
+}
+
+/* 파일 입력: 기본보다 살짝 부드럽게 */
+.image {
+    padding: 8px 10px;
+    /* 브라우저별 기본이 들쑥날쑥 → 통일 */
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+}
+
+.section.image {
+    align-items: center;
+}
+
+/* 제출 버튼 */
+.button {
+    align-self: center;
+    /* 버튼을 섹션 중앙에 */
+    padding: 12px 18px;
+    font-weight: 800;
+    border-radius: 12px;
+    border: 1px solid var(--brand);
+    background: var(--brand);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color .15s ease, transform .12s ease, filter .15s ease, box-shadow .15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 1px 1px rgba(0, 0, 0, .04);
+    margin-top: 6px;
+}
+
+/* 버튼 호버/액티브 */
+.button:hover {
+    filter: brightness(1.25);
+    transform: translateY(-1px);
+}
+
+.button:active {
+    filter: brightness(.92);
+    transform: translateY(0);
+}

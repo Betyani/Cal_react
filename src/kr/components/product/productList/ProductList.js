@@ -13,7 +13,7 @@ export default function ProductList({ onSelect }) {
   const [sort, setSort] = useState('new');
 
   const navigate = useNavigate();
-  const categories = ["全体", "カップラーメン", "お弁当", "おにぎり", "サンドイッチ", "飲み物", "アイスクリーム", "お菓子"];
+  const categories = ["전체", "도시락/조리면", "삼각김밥/김밥", "샌드위치/햄버거", "음료수/아이스크림", "과자/디저트", "기타"];
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;         // 한 페이지당 상품 수
   const blockSize = 5;        // 한 블럭당 페이지 수
@@ -29,7 +29,7 @@ export default function ProductList({ onSelect }) {
     axios.get('http://localhost:8080/cal/product/list', {
       params: {
         keyword: keyword,     // 검색어
-        category: category === "全体" ? "" : category, // "전체"는 빈 값으로 전달
+        category: category === "전체" ? "" : category, // "전체"는 빈 값으로 전달
         page: currentPage,
         size: pageSize,
         sort: sort,
@@ -56,7 +56,7 @@ export default function ProductList({ onSelect }) {
   const handleClickReview = (productId) => (e) => {
     e.stopPropagation();
     if (!isLoggedIn) {
-      alert('ログインしてください');
+      alert('로그인 해주세요');
       navigate('/login', { replace: true, state: { from: location } }); // 로그인 후 원래 위치로 복귀 가능
       return;
     }
@@ -86,7 +86,7 @@ export default function ProductList({ onSelect }) {
           <input
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder="商品名を入力"
+            placeholder="상품명을 입력"
           />
         </div>
         {/* 정렬순 버튼 */}
@@ -95,27 +95,24 @@ export default function ProductList({ onSelect }) {
           <button
             className={`${styles.tabButton} ${sort === 'new' ? styles.active : ''}`}
             onClick={() => setSort('new')}>
-          新着順
-          </button>
+            최신순</button>
           <button
             className={`${styles.tabButton} ${sort === 'old' ? styles.active : ''}`}
             onClick={() => setSort('old')}>
-          古い順
-          </button>
+            오래된순</button>
           <button
             className={`${styles.tabButton} ${sort === 'recommend' ? styles.active : ''}`}
             onClick={() => setSort('recommend')}>
-          人気順
-          </button>
+            추천순</button>
         </div>
       </div>
 
 
       <div className={styles.product}>
-        <h2>商品一覧({total}個)</h2>
+        <h2>상품 목록 ({total}개)</h2>
         {!loading && isAdmin && (<button className={`${styles.btn} ${styles.register}`}
           onClick={() => navigate('/product/register')}>
-          + 商品登録
+          + 상품등록
         </button>
         )}
       </div>
@@ -135,7 +132,7 @@ export default function ProductList({ onSelect }) {
 
               <div className={styles.meta}>
                 <span className={styles.price}>
-                  {Number(p.price).toLocaleString()}円
+                  {Number(p.price).toLocaleString()}원
                 </span>
                 <span className={styles.category}>{p.category}</span>
 
@@ -148,7 +145,7 @@ export default function ProductList({ onSelect }) {
                   onClick={handleClickReview(p.id)}
                   disabled={loading}
                 >
-                  レビュー投稿
+                  리뷰 쓰기
                 </button>
 
                 {/* 수정/삭제: 관리자 또는 본인 소유일 때만 보이게 */}
@@ -156,11 +153,11 @@ export default function ProductList({ onSelect }) {
                   <>
                     <button className={`${styles.btn} ${styles.outline}`}
                       onClick={(e) => { e.stopPropagation(); navigate(`/product/edit/${p.id}`); }}>
-                      編集
+                      수정
                     </button>
                     <button className={`${styles.btn} ${styles.danger}`}
                       onClick={(e) => { e.stopPropagation(); navigate(`/product/delete/${p.id}`); }}  >
-                      削除
+                      삭제
                     </button>
                   </>
                 )}
@@ -168,7 +165,7 @@ export default function ProductList({ onSelect }) {
             </article>
           ))
         ) : (
-          <p>商品がありません。</p>
+          <p>상품이 없습니다.</p>
         )}
       </div>
 
@@ -177,7 +174,7 @@ export default function ProductList({ onSelect }) {
       <div className={styles.pagination}>
         {startPage > 1 && (
           <button className={`${styles.page} ${styles.prev}`} onClick={() => setCurrentPage(startPage - 1)}>
-            ◀ 前へ
+            ◀ 이전
           </button>
         )}
         {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map(num => (
@@ -191,7 +188,7 @@ export default function ProductList({ onSelect }) {
         ))}
         {endPage < totalPages && (
           <button className={`${styles.page} ${styles.prev}`} onClick={() => setCurrentPage(endPage + 1)}>
-            次へ ▶
+            다음 ▶
           </button>
         )}
       </div>
