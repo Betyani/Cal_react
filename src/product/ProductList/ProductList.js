@@ -17,9 +17,8 @@ export default function ProductList({ onSelect }) {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;         // 한 페이지당 상품 수
   const blockSize = 5;        // 한 블럭당 페이지 수
-  const location = useLocation();
+  const location = useLocation();         //, 로그인 후 원래 위치로 navigate('/login', { state: { from: location } }) 와 같음
   const { isLoggedIn, isMaster, user, loading } = useAuth(); // 훅 구조에 맞게
-  const isAdmin = isMaster;                          // 관리자 alias
   const ownerOf = (p) => p.ownerId ?? p.memberId ?? p.writerId ?? p.userId ?? null; // ✅ 소유자 필드 유연 처리
 
 
@@ -113,7 +112,7 @@ export default function ProductList({ onSelect }) {
 
       <div className={styles.product}>
         <h2>商品一覧({total}個)</h2>
-        {!loading && isAdmin && (<button className={`${styles.btn} ${styles.register}`}
+        {!loading && isMaster && (<button className={`${styles.btn} ${styles.register}`}
           onClick={() => navigate('/product/register')}>
           + 商品登録
         </button>
@@ -152,7 +151,7 @@ export default function ProductList({ onSelect }) {
                 </button>
 
                 {/* 수정/삭제: 관리자 또는 본인 소유일 때만 보이게 */}
-                {isAdmin && (
+                {(isMaster || (user?.id && user.id === ownerOf(p))) && (
                   <>
                     <button className={`${styles.btn} ${styles.outline}`}
                       onClick={(e) => { e.stopPropagation(); navigate(`/product/edit/${p.id}`); }}>
