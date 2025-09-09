@@ -115,7 +115,7 @@ function ProductEdit() {
       {message && <p>{message}</p>}
 
       <div className={styles.section}>
-        <label>이름:</label>
+        <label>이름</label>
         <input
           className={styles.name}
           type="text"
@@ -127,7 +127,7 @@ function ProductEdit() {
       </div>
 
       <div className={styles.section}>
-        <label>가격:</label>
+        <label>가격</label>
         <input
           className={styles.price}
           type="text"
@@ -140,7 +140,7 @@ function ProductEdit() {
       </div>
 
       <div className={styles.section}>
-        <label>카테고리:</label>
+        <label>카테고리</label>
         <select
           className={styles.category}
           name="category"
@@ -161,7 +161,7 @@ function ProductEdit() {
       {/* 👉 URL 입력 대신 파일 선택 */}
       {/* 👉 파일 선택 제한 (accept) 추가 */}
       <div className={styles.section}>
-        <label>새 이미지 선택:</label>
+        <label>새 이미지 선택</label>
         <input className={styles.image} type="file" accept=".jpg, .jpeg, .png, .gif" onChange={handleFileChange} />
       </div>
 
