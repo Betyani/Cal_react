@@ -7,10 +7,10 @@ export default function  NotFound() {
     
     return (
         <div className={styles.wrap}>
-            <label className={styles.title}>404 - 페이지를 찾을 수 없습니다</label>
+            <label className={styles.title}>404 - ページが見つかりません</label>
             <img className={styles.image} src="/goBack.png" />
-            <p className={styles.content}>잘못된 주소로 접근하셨습니다! 홈으로 돌아가 주세요</p>
-            <button className={styles.button} onClick={() => navigate("/", {replace: true})}>홈으로</button>
+            <p className={styles.content}>指定されたページは存在しません。ホームにお戻りください。</p>
+            <button className={styles.button} onClick={() => navigate("/", {replace: true})}>ホームへ</button>
         </div>
     )
 }
