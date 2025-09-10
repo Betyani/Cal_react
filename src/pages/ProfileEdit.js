@@ -5,7 +5,23 @@ import account from './Account.module.css';
 
 // 회원가입과 동일한 비밀번호 정책
 const PW_POLICY = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&~]).{8,}$/;
+const NICKNAME_POLICY =/^(?=.{2,12}$)[\p{Script=Hangul}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9ー]+$/u;
+const EMAIL_POLICY = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+const validateNicknameInput = (nickname) => {
+  if (!nickname || !nickname.trim()) return '⚠️ 先にニックネームを入力してください。';
+  if (/\s/.test(nickname)) return '❌ 空白は使用できません。';
+  if (!NICKNAME_POLICY.test(nickname)) return '❌ 2〜12文字で、記号を使わずに入力してください。';
+  return null; 
+};
+
+const validateEmailInput = (email) => {
+  const trimmed = (email || '').trim();
+  if (!trimmed) return '⚠️ 先にメールアドレスを入力してください。';
+  if (/\s/.test(email)) return '❌  空白は使用できません。';
+  if (!EMAIL_POLICY.test(trimmed)) return '❌ メールアドレスを正しく入力してください。';
+  return null; 
+};
 export default function EditProfile() {
   // 내 정보
   const [info, setInfo] = useState({ id: '', name: '', nickname: '', email: '', role: 'USER' });
@@ -42,7 +58,7 @@ export default function EditProfile() {
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('loggedInUser'));
     const id = saved?.id || saved?.username;
-    if (!id) { setFormMessage('로그인 정보가 없습니다.'); return; }
+    if (!id) { setFormMessage('ログイン情報がありません。'); return; }
 
     axios.get('http://localhost:8080/cal/member/find-by-id', {
       params: { id },
@@ -77,6 +93,7 @@ export default function EditProfile() {
     }
   };
 
+
   // 비밀번호 입력/검증
   const onPw = (e) => {
     const { name, value } = e.target;
@@ -105,7 +122,7 @@ export default function EditProfile() {
 
   // 현재 비밀번호 확인(서버)
   const verifyCurrent = async () => {
-    if (!pw.current) { setCurrentMsg('⚠️ 현재 비밀번호를 입력하세요.'); setCurrentChecked(false); return; }
+    if (!pw.current) { setCurrentMsg('⚠️ 現在のパスワードを入力してください。'); setCurrentChecked(false); return; }
     try {
       await axios.post(
         'http://localhost:8080/cal/member/login',
@@ -123,6 +140,9 @@ export default function EditProfile() {
   // 닉네임/이메일 중복 확인
   const checkNickname = async () => {
     if (info.nickname === original.nickname) { setNicknameChecked(true); setNicknameMessage(''); return; }
+  const err = validateNicknameInput(info.nickname);
+    if (err) {setNicknameMessage(err); setNicknameChecked(false); return; }
+
     try {
       const { data } = await axios.get('http://localhost:8080/cal/member/check-nickname', {
         params: { nickname: info.nickname },
@@ -137,6 +157,9 @@ export default function EditProfile() {
   };
   const checkEmail = async () => {
     if (info.email === original.email) { setEmailChecked(true); setEmailMessage(''); return; }
+  const err = validateEmailInput(info.email);
+    if (err) {setEmailMessage(err); setEmailChecked(false); return; }
+
     try {
       const { data } = await axios.get('http://localhost:8080/cal/member/check-email', {
         params: { email: info.email },
@@ -316,7 +339,7 @@ export default function EditProfile() {
                 placeholder="email@example.com"
               />
               <button type="button" className={account.ghostButton} onClick={checkEmail}>
-                確認
+                メール確認
               </button>
               {emailMessage && (
                 <p className={`${account.help} ${emailChecked ? account.ok : account.err}`}>{emailMessage}</p>
