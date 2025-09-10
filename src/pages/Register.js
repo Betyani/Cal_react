@@ -152,17 +152,13 @@ export default function Register() {
                   setIdChecked(false);
                   return;
                 }
-                try {
-                  const res = await axios.get(
-                    'http://localhost:8080/cal/member/check-id',
-                    { params: { id: idCheck } }   // ← 자동 인코딩
-                  );
-                  const msg = String(res.data);
-                  setIdMessage(msg);
-                  setIdChecked(msg.includes('사용 가능'));
+                 try {
+                  const res = await axios.get('http://localhost:8080/cal/member/check-id', { params: { id: idCheck } });
+                  setIdMessage(String(res.data));
+                  setIdChecked(true);
                 } catch (err) {
-                  setIdMessage(err.response?.data || '중복 확인 중 오류 발생');
-                  setIdChecked(false);
+                  setIdMessage(err.response?.data || '中복 확인 중 오류 발생');
+                  setIdChecked(false);   
                 }
               }}
             >
@@ -170,9 +166,9 @@ export default function Register() {
             </button>
           </div>
           {idMessage && (
-            <p className={`${account.help} ${idMessage.includes('사용 가능') ? account.ok : account.err}`}>
+            <p className={`${account.help} ${idChecked ? account.ok : account.err}`}>
               {idMessage}
-            </p>
+              </p>
           )}
 
           {/* 비밀번호 */}
@@ -259,9 +255,8 @@ export default function Register() {
                     'http://localhost:8080/cal/member/check-nickname',
                     { params: { nickname: nicknameCheck } }
                   );
-                  const msg = String(res.data);
-                  setNicknameMessage(msg);
-                  setNicknameChecked(msg.includes('사용 가능'));
+                  setNicknameMessage(String(res.data));
+                  setNicknameChecked(true);    
                 } catch (err) {
                   setNicknameMessage(err.response?.data || '중복 확인 중 오류 발생');
                   setNicknameChecked(false);
@@ -309,11 +304,12 @@ export default function Register() {
                     'http://localhost:8080/cal/member/check-email',
                     { params: { email: emailCheck } }
                   );
-                  const msg = String(res.data);
-                  setEmailMessage(msg);
-                  setEmailChecked(msg.includes('사용 가능'));
-                } catch (err) {
-                  setEmailMessage(err.response?.data || '중복 확인 중 오류 발생');
+                 setEmailMessage(String(res.data));
+                 setEmailChecked(true);   
+                } 
+                catch (err) {
+                  const msg = err.response?.data || '중복 확인 중 오류 발생';
+                  setEmailMessage(String(msg));       // "すでに使われているメールアドレスです。"
                   setEmailChecked(false);
                 }
               }}
