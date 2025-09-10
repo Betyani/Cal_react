@@ -121,6 +121,7 @@ export default function ProductList({ onSelect }) {
             </button>
           ))}
         </div>
+        
 
         {/* 검색창 */}
 
