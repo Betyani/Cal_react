@@ -113,10 +113,10 @@ export default function EditProfile() {
         { withCredentials: true }
       );
       setCurrentChecked(true);
-      setCurrentMsg('✅ 기존 비밀번호가 확인되었습니다.');
+      setCurrentMsg('✅ 現在のパスワードを確認しました。.');
     } catch {
       setCurrentChecked(false);
-      setCurrentMsg('❌ 기존 비밀번호가 맞지 않습니다.');
+      setCurrentMsg('❌ 現在のパスワードが一致しません。');
     }
   };
 
@@ -160,7 +160,7 @@ export default function EditProfile() {
     const changingPassword = !!(pw.current || pw.next || pw.confirm);
 
     if (!changedNickname && !changedEmail && !changingPassword) {
-      setFormMessage('변경된 내용이 없습니다.');
+      setFormMessage('変更内容がありません。');
       return;
     }
     
@@ -183,7 +183,7 @@ export default function EditProfile() {
     );
 
     //  성공하면 작은 창으로 메시지 출력
-    alert(res.data?.message || '회원 정보가 수정되었습니다.');
+    alert(res.data?.message || '会員情報が更新されました。');
 
     //  새 세션 정보 다시 받아서 로컬에도 반영 (상단 닉네임 즉시 갱신용)
     try {
@@ -193,7 +193,7 @@ export default function EditProfile() {
 
     navigate('/'); // 원하는 페이지로 이동
   } catch (err) {
-    setFormMessage(err.response?.data?.message || '수정 실패. 잠시 후 다시 시도해주세요.');
+    setFormMessage(err.response?.data?.message || '更新に失敗しました。時間をおいてから再度お試しください。');
   } finally {
     setLoading(false);
   }
@@ -202,19 +202,18 @@ export default function EditProfile() {
   return (
     <div className={account.wrap}>
       <div className={account.card}>
-        <h2 className={account.title}>회원 정보 수정</h2>
+        <h2 className={account.title}>会員情報の変更</h2>
 
         {formMessage && <p className={`${account.help} ${account.err}`}>{formMessage}</p>}
 
         {/* 읽기 전용 정보 */}
         <div className={account.section}>
-          <h3 className={account.sectionTitle}>내 정보</h3>
           <div className={account.formRow}>
-            <label className={account.label}>아이디</label>
+            <label className={account.label}>ユーザーID</label>
             <input className={account.input} name="id" value={info.id} readOnly />
           </div>
           <div className={account.formRow}>
-            <label className={account.label}>이름</label>
+            <label className={account.label}>名前</label>
             <input className={account.input} name="name" value={info.name} readOnly />
           </div>
         </div>
@@ -222,22 +221,22 @@ export default function EditProfile() {
         <form onSubmit={handleSubmit} className={account.form}>
           {/* 비밀번호 변경 */}
           <div className={account.section}>
-            <h3 className={account.sectionTitle}>비밀번호 변경</h3>
+            <h2 className={account.sectionTitle}>パスワードの変更</h2>
 
             {/* 현재 비밀번호 + 확인 버튼 */}
             <div className={account.formRow}>
-              <label className={account.label}>현재 비밀번호</label>
+              <label className={account.label}>現在のパスワード</label>
               <div className={account.inlineRow}>
                 <input
                   name="current"
                   value={pw.current}
                   onChange={onPw}
                   className={account.input}
-                  placeholder="현재 비밀번호"
+                  placeholder="現在のパスワード"
                 />
 
                 <button type="button" className={account.ghostButton} onClick={verifyCurrent}>
-                  현재 비밀번호 확인
+                  確認
                 </button>
               </div>
               {currentMsg && (
@@ -247,7 +246,7 @@ export default function EditProfile() {
 
             {/* 새 비밀번호 */}
             <div className={account.formRow}>
-              <label className={account.label}>새 비밀번호</label>
+              <label className={account.label}>新しいパスワード</label>
               <div className={account.inlineRow}>
                 <input
                   type={showNext ? 'text' : 'password'}
@@ -255,10 +254,10 @@ export default function EditProfile() {
                   value={pw.next}
                   onChange={onPw}
                   className={account.input}
-                  placeholder="영문+숫자+특수문자 8자 이상"
+                  placeholder="英字・数字・記号を含む8文字以上"
                 />
                 <button type="button" className={account.inlineButton} onClick={() => setShowNext(v => !v)}>
-                  {showNext ? '숨김' : '보기'}
+                  {showNext ? '非表示' : '表示'}
                 </button>
               </div>
               {pwMsg && <p className={`${account.help} ${validPw ? account.ok : account.err}`}>{pwMsg}</p>}
@@ -266,7 +265,7 @@ export default function EditProfile() {
 
             {/* 새 비밀번호 확인 */}
             <div className={account.formRow}>
-              <label className={account.label}>새 비밀번호 확인</label>
+              <label className={account.label}>新しいパスワード（確認）</label>
               <div className={account.inlineRow}>
                 <input
                   type={showConfirm ? 'text' : 'password'}
@@ -274,10 +273,10 @@ export default function EditProfile() {
                   value={pw.confirm}
                   onChange={onPw}
                   className={account.input}
-                  placeholder="새 비밀번호 확인"
+                  placeholder="もう一度入力してください。"
                 />
                 <button type="button" className={account.inlineButton} onClick={() => setShowConfirm(v => !v)}>
-                  {showConfirm ? '숨김' : '보기'}
+                  {showConfirm ? '非表示' : '表示'}
                 </button>
               </div>
               {matchMsg && (
@@ -288,19 +287,19 @@ export default function EditProfile() {
 
           {/* 닉네임 / 이메일 */}
           <div className={account.section}>
-            <h3 className={account.sectionTitle}>닉네임 / 이메일 수정</h3>
+            <h3 className={account.sectionTitle}>ニックネーム / メールアドレス 変更</h3>
 
             <div className={account.formRow}>
-              <label className={account.label}>닉네임</label>
+              <label className={account.label}>ニックネーム</label>
               <input
                 className={account.input}
                 name="nickname"
                 value={info.nickname}
                 onChange={onInfo}
-                placeholder="닉네임"
+                placeholder="ニックネーム"
               />
               <button type="button" className={account.ghostButton} onClick={checkNickname}>
-                중복 확인
+                確認
               </button>
               {nicknameMessage && (
                 <p className={`${account.help} ${nicknameChecked ? account.ok : account.err}`}>{nicknameMessage}</p>
@@ -308,7 +307,7 @@ export default function EditProfile() {
             </div>
 
             <div className={account.formRow}>
-              <label className={account.label}>이메일</label>
+              <label className={account.label}>メールアドレス</label>
               <input
                 className={account.input}
                 name="email"
@@ -317,7 +316,7 @@ export default function EditProfile() {
                 placeholder="email@example.com"
               />
               <button type="button" className={account.ghostButton} onClick={checkEmail}>
-                이메일 중복 확인
+                確認
               </button>
               {emailMessage && (
                 <p className={`${account.help} ${emailChecked ? account.ok : account.err}`}>{emailMessage}</p>
