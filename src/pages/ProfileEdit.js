@@ -149,7 +149,8 @@ export default function EditProfile() {
       });
       const msg = String(data);
       setNicknameMessage(msg);
-      setNicknameChecked(msg.includes('사용 가능'));
+     setNicknameChecked( /(?:사용\s*가능|使用可能|利用可能|\bavailable\b)/i.test(msg) &&!/(?:불\s*가능|不可能|\bunavailable\b)/i.test(msg)
+     );
     } catch (err) {
       setNicknameMessage(err.response?.data || '중복 확인 중 오류');
       setNicknameChecked(false);
@@ -166,7 +167,8 @@ export default function EditProfile() {
       });
       const msg = String(data);
       setEmailMessage(msg);
-      setEmailChecked(msg.includes('사용 가능'));
+      setEmailChecked(/(?:사용\s*가능|使用可能|利用可能|\bavailable\b)/i.test(msg) &&!/(?:불\s*가능|不可能|\bunavailable\b)/i.test(msg)
+     );
     } catch (err) {
       setEmailMessage(err.response?.data || '중복 확인 중 오류');
       setEmailChecked(false);
