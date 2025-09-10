@@ -13,15 +13,15 @@ const BoardDelete = () => {
     run.current = true;
 
     const deleteBoard = async () => {
-      if (window.confirm('정말 삭제하시겠습니까?')) {
+      if (window.confirm('もう一度確認、削除しますか？')) {
         try {
           await axios.delete('http://localhost:8080/cal/board/delete', {
             params: { id },
           });
-          alert('삭제 성공!');
+          alert('削除　成功!');
           navigate('/', {replace: true}); // 🔹 삭제 후 홈으로 이동
         } catch (err) {
-          alert('삭제 실패!');
+          alert('削除　失敗！');
           console.error(err);
           navigate('/', {replace: true}); // 실패 시 다시 리스트로
         }
@@ -33,7 +33,7 @@ const BoardDelete = () => {
     deleteBoard();
   }, [id]);
 
-  return <p>삭제 중입니다...</p>; // 삭제 처리 중에 보여줄 임시 메시지
+  return <p>削除中...</p>; // 삭제 처리 중에 보여줄 임시 메시지
 };
 
 export default BoardDelete;
