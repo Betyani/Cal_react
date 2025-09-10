@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';     //useEffect 추가 → 성/이름이 바뀔 때 form.name = "姓 名" 으로 자동 결합하기 위해 넣었음
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import account from './Account.module.css';
@@ -6,7 +6,7 @@ import account from './Account.module.css';
 // 🔹 형식 검사 정규식
 const id_POLICY = /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{4,12}$/;
 const pw_POLICY = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&~]).{8,}$/;
-const nickname_POLICY = /^[가-힣a-zA-Z0-9]{2,12}$/;
+const nickname_POLICY =/^(?=.{2,12}$)[\p{Script=Hangul}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9ー]+$/u;
 const email_POLICY = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function Register() {
@@ -18,6 +18,9 @@ export default function Register() {
     email: ''
   });
 
+  const [firstName, setFirstName] = useState(''); // 姓
+  const [lastName, setLastName] = useState('');   // 名
+
   // ✅ 비밀번호만 실시간 메시지/검증 사용
   const [validationMessage, setValidationMessage] = useState({ pw: '' });
   const [valid, setValid] = useState({ pw: false });
@@ -28,12 +31,24 @@ export default function Register() {
   const [idMessage, setIdMessage] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
+  
 
   const [nicknameChecked, setNicknameChecked] = useState(false);
   const [nicknameMessage, setNicknameMessage] = useState('');
 
   const [emailChecked, setEmailChecked] = useState(false);
   const [emailMessage, setEmailMessage] = useState('');
+
+   const joinFullName = (fam, giv) => {
+    const f = (fam ?? '').trim();
+    const g = (giv ?? '').trim();
+    return f && g ? `${f} ${g}` : (f || g); // ← 공백 포함(현재 설정)
+    // return f && g ? `${f}${g}` : (f || g); // ← 공백 없이로 바꿀 곳
+  };
+
+    useEffect(() => {
+    setForm(prev => ({ ...prev, name: joinFullName(firstName, lastName) }));
+  }, [firstName, lastName]);
 
 
   // 비밀번호만 검증
@@ -72,10 +87,12 @@ export default function Register() {
   // 회원가입
   const handleRegister = async (e) => {
     e.preventDefault();
+    
+    const finalName = joinFullName(firstName, lastName);
 
     // 비번 + 3중 중복확인 + 이름 입력
     const ready =
-      valid.pw && idChecked && nicknameChecked && emailChecked && form.name.trim();
+      valid.pw && idChecked && nicknameChecked && emailChecked && finalName;
 
     if (!ready) {
       alert('入力形式の確認と重複チェックを完了してください。');
@@ -88,7 +105,7 @@ export default function Register() {
         {
           id: form.id.trim(),
           password: form.pw,             //  공백 허용 trim() 만 넣으면 됨 쫌 외우자 
-          name: form.name.trim(),
+          name: finalName, 
           nickname: form.nickname.trim(),
           email: form.email.trim()
         }
@@ -186,14 +203,23 @@ export default function Register() {
           <div className={account.formRow}>
             <label className={account.label}>名前</label>
             <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className={account.input}
-              placeholder="名前"
-            />
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                className={account.input}
+                placeholder="姓"
+              />
+            </div>
+            <div className={account.inlineRow} style={{ marginTop: 8 }}>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className={account.input}
+                placeholder="名"
+              />
           </div>
 
           {/* 닉네임 */}
@@ -306,7 +332,7 @@ export default function Register() {
               !idChecked ||
               !nicknameChecked ||
               !emailChecked ||
-              !form.name.trim()   // 이름 입력
+              !form.name.trim()
             }
           >
             会員登録
