@@ -157,7 +157,7 @@ export default function Register() {
                   setIdMessage(String(res.data));
                   setIdChecked(true);
                 } catch (err) {
-                  setIdMessage(err.response?.data || '中복 확인 중 오류 발생');
+                  setIdMessage(err.response?.data || '중복 확인 중 오류 발생');
                   setIdChecked(false);   
                 }
               }}
