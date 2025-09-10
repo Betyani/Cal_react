@@ -24,14 +24,14 @@ export default function BoardEdit() {
       })
       .catch(err => {
         console.error(err);
-        alert('❌ 게시글 로드 실패');
+        alert('❌ 掲示板のロード失敗');
       });
   }, [id]);
 
   //수정 부탁 형식
   const handleUpdate = () => {
     if (!title.trim() || !content.trim()) {
-      alert('⚠️ 제목과 내용을 모두 입력하세요!');
+      alert('⚠️ タイトルとコンテンツを入力してください!');
       return;
     }
 
@@ -40,41 +40,41 @@ export default function BoardEdit() {
 
     axios.put(`http://localhost:8080/cal/board/update/${id}`, updatedBoard)
       .then(() => {
-        alert('✔️ 게시글이 수정되었습니다!');
+        alert('✔️ 掲示板を修正します!');
         navigate("/", { replace: true });
       })
       .catch(err => {
         console.error(err);
-        alert('❌ 수정 실패');
+        alert('❌ 掲示板の修正が失敗しました。');
       })
       .finally(() => setLoading(false));
   };
 
   return (
     <div className={styles.form}>
-      <h2 className={styles.label}>리뷰 수정</h2>
+      <h2 className={styles.label}>レビュー編集</h2>
       {loading && <p>수정 중...</p>}
 
       <div className={styles.section}>
-        <label>제목</label>
+        <label>タイトル</label>
         <input className={styles.title} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} required />
       </div>
 
       <div className={styles.section}>
-        <label>내용</label>
+        <label>コンテンツ</label>
         <textarea className={styles.content} value={content} onChange={(e) => setContent(e.target.value)} maxLength={maxLength} required />
       </div>
 
       <div className={styles.counter}>
-        {content.length} / {maxLength}자
+        {content.length} / {maxLength} 文字
       </div>
 
       <div className={styles.section}>
-        <label>작성자: {writer}</label>
+        <label>作成者: {writer}</label>
       </div>
 
       <div className={styles.section}>
-        <button className={styles.button} onClick={handleUpdate}>수정하기</button>
+        <button className={styles.button} onClick={handleUpdate}>編集する</button>
       </div>
     </div>
   );

@@ -23,18 +23,18 @@ function BoardDetail() {
 
   return (
     <div className="board-detail-container">
-      <h2>게시글 상세보기</h2>
+      <h2>レビューの編集</h2>
       <p><strong>ID:</strong> {board.id}</p>
-      <p><strong>제목:</strong> {board.title}</p>
-      <p><strong>내용:</strong> {board.content}</p>
-      <p><strong>작성자:</strong> {board.writer}</p>
+      <p><strong>タイトル:</strong> {board.title}</p>
+      <p><strong>コンテンツ:</strong> {board.content}</p>
+      <p><strong>作成者:</strong> {board.writer}</p>
       <p>
         {/* <strong>작성일:</strong>
         {board.createTime && `${board.createTime.date} ${board.createTime.time}`} */}
-        <strong>작성일:</strong> {board.createTime}
+        <strong>作成日:</strong> {board.createTime}
       </p>
-      <button onClick={() => navigate(`/board/form/${id}`)}>수정하기</button>
-      <button onClick={() => navigate(-1)}>뒤로가기</button>
+      <button onClick={() => navigate(`/board/form/${id}`)}>編集</button>
+      <button onClick={() => navigate(-1)}>戻る</button>
       {/* history.back() 비슷함! 그리고, navigate(1)は	앞으로 가기 (history forward) */}
     </div>
   );

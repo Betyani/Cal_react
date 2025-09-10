@@ -88,17 +88,17 @@ export default function BoardList({ productId }) {
 
                     <thead>
                         <tr>
-                            <th>글 번호</th>
-                            <th>제목</th>
-                            <th>작성자</th>
-                            <th>작성시간</th>
+                            <th>文番号</th>
+                            <th>タイトル</th>
+                            <th>作成者</th>
+                            <th>作成時間</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {review.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className={styles.empty}>리뷰가 없습니다. 첫 리뷰를 남겨보세요!</td>
+                                <td colSpan={4} className={styles.empty}>レビューはありません。最初にレビューしてください!</td>
                             </tr>
                         ) : (
                             review.map((item, index) => (
@@ -119,7 +119,7 @@ export default function BoardList({ productId }) {
             <div className={styles.pagination}>
                 {pageInfo.hasPrev && (
                     <button className={`${styles.page} ${styles.prev}`} onClick={() => goToPage(pageInfo.startPage - 1)}>
-                        ◀ 이전
+                        ◀ 以前
                     </button>
                 )}
 
@@ -133,7 +133,7 @@ export default function BoardList({ productId }) {
 
                 {pageInfo.hasNext && (
                     <button className={`${styles.page} ${styles.prev}`} onClick={() => goToPage(pageInfo.endPage + 1)}>
-                        다음▶
+                        次▶
                     </button>
                 )}
 
@@ -147,8 +147,8 @@ export default function BoardList({ productId }) {
                             <button className={styles.close} onClick={closeModal} aria-label="닫기">×</button>
                         </div>
                         <div className={styles.meta}>
-                            <span>작성자: <strong>{active.writer}</strong></span>
-                            <span>작성시간: {active.createTime}</span>
+                            <span>作成者: <strong>{active.writer}</strong></span>
+                            <span>作成時間: {active.createTime}</span>
                         </div>
                         <div className={styles.modalBody}>
                             <pre className={styles.content}>{active.content}</pre>
@@ -157,14 +157,14 @@ export default function BoardList({ productId }) {
                             {(isAdmin || (isUser?.nickname === active.writer)) && (
                                 <>
                                     <button className={`${styles.btn} ${styles.outline}`} onClick={() => navigate(`/board/edit/${active.id}`)}>
-                                        수정
+                                        編集
                                     </button>
                                     <button className={`${styles.btn} ${styles.danger}`} onClick={() => navigate(`/board/delete/${active.id}`)}>
-                                        삭제
+                                        削除
                                     </button>
                                 </>
                             )}
-                            <button className={styles.btn} onClick={closeModal}>닫기</button>
+                            <button className={styles.btn} onClick={closeModal}>閉める</button>
                         </div>
                     </div>
                 </div>
