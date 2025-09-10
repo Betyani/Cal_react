@@ -18,7 +18,7 @@ export default function Frame() {
                 </section>
 
                 <section className="section">
-                    <h2 className="section-title">{selectProduct ? (`${selectProduct.name}`) : ("상품을 선택해주세요.")}</h2>
+                    <h2 className="section-title">{selectProduct ? (`${selectProduct.name}`) : ("商品を選択してください")}</h2>
                     <BoardList productId={selectProduct?.id} />
                 </section>
             </main>
