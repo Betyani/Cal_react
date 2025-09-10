@@ -11,6 +11,7 @@ export default function ProductList({ onSelect }) {
   const [keyword, setKeyword] = useState('');                  // 검색바
   const [category, setCategory] = useState('');                // 카테고리
   const [sort, setSort] = useState('new');
+  const [likeLoading, setLikeLoading] = useState({});
 
   const navigate = useNavigate();
   const categories = ["全体", "カップラーメン", "お弁当", "おにぎり", "サンドイッチ", "飲み物", "アイスクリーム", "お菓子"];
@@ -62,6 +63,48 @@ export default function ProductList({ onSelect }) {
     navigate(`/board/register/${productId}`);
   };
 
+  // 추천(좋아요) 버튼 클릭 처리
+  const handleClickLike = async (p) => {
+    if (!isLoggedIn) {
+      alert("로그인 해주세요");
+      navigate("/login", { replace: true, state: { from: location } });
+      return;
+    }
+    const uid = user?.id;
+    if (!uid || likeLoading[p.id]) return;
+
+    setLikeLoading(prev => ({ ...prev, [p.id]: true }));
+    try {
+      if (!p.liked) {
+        // 좋아요 처리
+        setProducts(prev => prev.map(prod =>
+          prod.id === p.id ? { ...prod, liked: true, likeCount: (prod.likeCount || 0) + 1 } : prod
+        ));
+        await axios.post(`http://localhost:8080/cal/product/${p.id}/like`, null, { params: { userId: uid } });
+      } else {
+        // 좋아요 취소 처리
+        setProducts(prev => prev.map(prod =>
+          prod.id === p.id ? { ...prod, liked: false, likeCount: Math.max((prod.likeCount || 0) - 1, 0) } : prod
+        ));
+
+        //axios.delete URL에 userId 직접 넣기
+        await axios.delete(`http://localhost:8080/cal/product/${p.id}/like?userId=${uid}`);
+      }
+    } catch (err) {
+      // 🔹 수정된 부분: alert 조건 추가
+      if (err.response && err.response.status < 500) {
+        // 이미 추천 취소 상태 등, 사용자 오류 → UI에는 반영되고 alert 생략
+        console.warn("추천 요청 오류(무시 가능):", err.response.data);
+      } else {
+        console.error("추천 실패:", err);
+        alert("추천 처리 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setLikeLoading(prev => ({ ...prev, [p.id]: false }));
+    }
+  };
+
+
 
   return (
     <>
@@ -94,17 +137,17 @@ export default function ProductList({ onSelect }) {
           <button
             className={`${styles.tabButton} ${sort === 'new' ? styles.active : ''}`}
             onClick={() => setSort('new')}>
-          新着順
+            新着順
           </button>
           <button
             className={`${styles.tabButton} ${sort === 'old' ? styles.active : ''}`}
             onClick={() => setSort('old')}>
-          古い順
+            古い順
           </button>
           <button
             className={`${styles.tabButton} ${sort === 'recommend' ? styles.active : ''}`}
             onClick={() => setSort('recommend')}>
-          人気順
+            人気順
           </button>
         </div>
       </div>
@@ -141,6 +184,17 @@ export default function ProductList({ onSelect }) {
               </div>
               <div className={styles.buttonWrap}>
                 {/* 로그인한 경우에만 버튼 보이기 (loading 동안은 숨김) */}
+
+                {/* 추천 버튼 추가 */}
+                <button
+                  className={styles.btn}
+                  style={{ color: p.liked ? "red" : "gray" }}
+                  onClick={e => { e.stopPropagation(); handleClickLike(p); }}
+                  disabled={!!likeLoading[p.id]}
+                >
+                  ❤️ {p.likeCount}
+                </button>
+
 
                 <button
                   className={`${styles.btn} ${styles.primary}`}
