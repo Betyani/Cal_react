@@ -38,10 +38,10 @@ export default function Header() {
       localStorage.removeItem('loggedInUser');
       setLoggedIn(false);
       navigate('/');
-      alert('로그아웃 완료');
+      alert('ログアウトしました。');
     } catch (err) {
       console.error('로그아웃 실패', err);
-      alert('로그아웃 실패');
+      alert('ログアウトに失敗しました。');
     }
   };
 
@@ -52,14 +52,14 @@ export default function Header() {
           <Link to="/" className="nav-link">Home</Link>
         </div>
         <div className="nav-right">
-          {!loggedIn && <Link to="/register" className="nav-button">회원가입</Link>}
-          {!loggedIn && <Link to="/login" className="nav-button">로그인</Link>}
+          {!loggedIn && <Link to="/register" className="nav-button">会員登録</Link>}
+          {!loggedIn && <Link to="/login" className="nav-button">ログインへ</Link>}
         </div>
         {loggedIn && (
           <div className="nav-right">
-          <span className="user-info">{nickname}님 환영합니다</span>
-          <button onClick={() => navigate('/profile/edit')} className="nav-button">정보수정</button>
-          <button onClick={handleLogout} className="nav-button logout">로그아웃</button>
+          <span className="user-info">{nickname}様 ようこそ</span>
+          <button onClick={() => navigate('/profile/edit')} className="nav-button">マイページ</button>
+          <button onClick={handleLogout} className="nav-button logout">ログアウト</button>
         </div>
         )}
       </nav>

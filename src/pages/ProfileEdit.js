@@ -225,7 +225,7 @@ export default function EditProfile() {
   return (
     <div className={account.wrap}>
       <div className={account.card}>
-        <h2 className={account.title}>会員情報の変更</h2>
+        <h2 className={account.title}>マイページ</h2>
 
         {formMessage && <p className={`${account.help} ${account.err}`}>{formMessage}</p>}
 
@@ -359,7 +359,7 @@ export default function EditProfile() {
               ((info.email !== original.email) && !emailChecked)
             }
           >
-            {loading ? '저장 중…' : '회원정보 수정'}
+            {loading ? '保存中…' : '会員情報を変更'}
           </button>
         </form>
       </div>
