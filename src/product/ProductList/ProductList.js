@@ -121,7 +121,7 @@ export default function ProductList({ onSelect }) {
             </button>
           ))}
         </div>
-        
+
 
         {/* 검색창 */}
 
@@ -174,7 +174,19 @@ export default function ProductList({ onSelect }) {
                   src={`http://localhost:8080/cal/image/load/${p.imageUrl}`}
                   alt={p.name}
                 />) : (<div className={`${styles.thumb} ${styles['thumb--placeholder']}`} />)}
-              <h3 className={styles.name}>{p.name}</h3>
+              
+              <div className={styles.titleRow}>
+                <h3 className={styles.name}>{p.name}</h3>
+                {/* 추천 버튼 추가 */}
+                <button
+                  className={`${styles.btn} ${styles.likeBtn} ${p.liked ? styles.liked : ''}`}
+                  style={{ color: p.liked ? "red" : "gray" }}
+                  onClick={e => { e.stopPropagation(); handleClickLike(p); }}
+                  disabled={!!likeLoading[p.id]}
+                >
+                  ❤️ {p.likeCount}
+                </button>
+              </div>
 
               <div className={styles.meta}>
                 <span className={styles.price}>
@@ -185,18 +197,6 @@ export default function ProductList({ onSelect }) {
               </div>
               <div className={styles.buttonWrap}>
                 {/* 로그인한 경우에만 버튼 보이기 (loading 동안은 숨김) */}
-
-                {/* 추천 버튼 추가 */}
-                <button
-                  className={styles.btn}
-                  style={{ color: p.liked ? "red" : "gray" }}
-                  onClick={e => { e.stopPropagation(); handleClickLike(p); }}
-                  disabled={!!likeLoading[p.id]}
-                >
-                  ❤️ {p.likeCount}
-                </button>
-
-
                 <button
                   className={`${styles.btn} ${styles.primary}`}
                   onClick={handleClickReview(p.id)}

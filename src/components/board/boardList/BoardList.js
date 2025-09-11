@@ -88,7 +88,7 @@ export default function BoardList({ productId }) {
 
                     <thead>
                         <tr>
-                            <th>文番号</th>
+                            <th>番号</th>
                             <th>タイトル</th>
                             <th>作成者</th>
                             <th>作成時間</th>
@@ -98,7 +98,7 @@ export default function BoardList({ productId }) {
                     <tbody>
                         {review.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className={styles.empty}>レビューはありません。最初にレビューしてください!</td>
+                                <td colSpan={4} className={styles.empty}>レビューがまだありません。最初のレビューを投稿してください。</td>
                             </tr>
                         ) : (
                             review.map((item, index) => (
