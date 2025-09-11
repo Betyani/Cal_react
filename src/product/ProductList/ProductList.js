@@ -69,7 +69,7 @@ export default function ProductList({ onSelect }) {
   // 추천(좋아요) 버튼 클릭 처리
   const handleClickLike = async (p) => {
     if (!isLoggedIn) {
-      alert("로그인 해주세요");
+      alert("ログインしてください。");
       navigate("/login", { replace: true, state: { from: location } });
       return;
     }

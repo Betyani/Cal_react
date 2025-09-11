@@ -40,12 +40,12 @@ export default function BoardEdit() {
 
     axios.put(`http://localhost:8080/cal/board/update/${id}`, updatedBoard)
       .then(() => {
-        alert('✔️ 掲示板を修正します!');
+        alert('✔️ 変更しました。');
         navigate("/", { replace: true });
       })
       .catch(err => {
         console.error(err);
-        alert('❌ 掲示板の修正が失敗しました。');
+        alert('❌ 変更に失敗しました。');
       })
       .finally(() => setLoading(false));
   };
@@ -53,7 +53,7 @@ export default function BoardEdit() {
   return (
     <div className={styles.form}>
       <h2 className={styles.label}>レビュー編集</h2>
-      {loading && <p>수정 중...</p>}
+      {loading && <p>ローディング…</p>}
 
       <div className={styles.section}>
         <label>タイトル</label>
