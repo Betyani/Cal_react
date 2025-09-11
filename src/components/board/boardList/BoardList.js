@@ -119,7 +119,7 @@ export default function BoardList({ productId }) {
             <div className={styles.pagination}>
                 {pageInfo.hasPrev && (
                     <button className={`${styles.page} ${styles.prev}`} onClick={() => goToPage(pageInfo.startPage - 1)}>
-                        ◀ 以前
+                        ◀ 前へ
                     </button>
                 )}
 
@@ -133,7 +133,7 @@ export default function BoardList({ productId }) {
 
                 {pageInfo.hasNext && (
                     <button className={`${styles.page} ${styles.prev}`} onClick={() => goToPage(pageInfo.endPage + 1)}>
-                        次▶
+                        次へ ▶
                     </button>
                 )}
 

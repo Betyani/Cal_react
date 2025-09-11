@@ -17,7 +17,7 @@ export default function Header() {
         const { data } = await axios.get("http://localhost:8080/cal/member/status", { withCredentials: true });
         console.log("서버 확인값:", data);
 
-        setNickname(data.nickname|| data.id);
+        setNickname(data.nickname || data.id);
         setLoggedIn(true);
       }
 
@@ -37,7 +37,13 @@ export default function Header() {
       });
       localStorage.removeItem('loggedInUser');
       setLoggedIn(false);
-      navigate('/');
+      if (window.location.pathname === "/") {
+        // 이미 /라면 강제 새로고침
+        window.location.reload();
+      } else {
+        // 다른 페이지라면 /로 이동
+        navigate("/", { replace: true });
+      }
       alert('ログアウトしました。');
     } catch (err) {
       console.error('로그아웃 실패', err);
@@ -45,11 +51,24 @@ export default function Header() {
     }
   };
 
+  const handleHome = async () => {
+    if (window.location.pathname === "/") {
+      // 이미 /라면 강제 새로고침
+      window.location.reload();
+    } else {
+      // 다른 페이지라면 /로 이동
+      navigate("/", { replace: true });
+    }
+  };
+
+
+
+
   return (
     <header className="header">
       <nav className="nav">
         <div className="nav-left">
-          <Link to="/" className="nav-link">Home</Link>
+          <button onClick={handleHome} className="nav-button">Home</button>
         </div>
         <div className="nav-right">
           {!loggedIn && <Link to="/register" className="nav-button">会員登録</Link>}
@@ -57,10 +76,10 @@ export default function Header() {
         </div>
         {loggedIn && (
           <div className="nav-right">
-          <span className="user-info">{nickname}様 ようこそ</span>
-          <button onClick={() => navigate('/profile/edit')} className="nav-button">マイページ</button>
-          <button onClick={handleLogout} className="nav-button logout">ログアウト</button>
-        </div>
+            <span className="user-info">{nickname}様 ようこそ</span>
+            <button onClick={() => navigate('/profile/edit')} className="nav-button">マイページ</button>
+            <button onClick={handleLogout} className="nav-button logout">ログアウト</button>
+          </div>
         )}
       </nav>
     </header>
