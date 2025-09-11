@@ -33,10 +33,13 @@ export default function ProductList({ onSelect }) {
         page: currentPage,
         size: pageSize,
         sort: sort,
+        userId: user?.id || null   // 로그인한 사용자 ID 전달
 
-      }
+      },
+      withCredentials: true        // 세션/쿠키 기반 로그인 유지
     })
       .then((res) => {
+        // 서버에서 내려준 liked, likeCount 값을 그대로 반영
         setProducts(res.data.products);             // res.data JSON 객체이며, products는 상품 목록 배열
         setTotal(res.data.total);                   // 전체 상품 수 저장 
       })
@@ -44,7 +47,7 @@ export default function ProductList({ onSelect }) {
       .catch((err) => {
         console.error("상품 조회 실패:", err);
       });
-  }, [keyword, category, sort, currentPage]);     // 검색어가 바뀔 때마다 자동 요청하게 괄호안에 있는것들을 넣음
+  }, [keyword, category, sort, currentPage, user?.id]);     // 검색어가 바뀔 때마다 자동 요청하게 괄호안에 있는것들을 넣음  //user.id 변경 시에도 다시 호출
 
   const totalPages = Math.ceil(total / pageSize);
   const currentBlock = Math.floor((currentPage - 1) / blockSize);
