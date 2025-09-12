@@ -122,7 +122,7 @@ export default function ProductList({ onSelect }) {
             <button
               key={cat}
               className={`${styles.tabButton} ${category === cat ? styles.active : ''}`}
-              onClick={() => setCategory(cat)}
+              onClick={() => handleSelectCategory(cat)}
             >
               {cat}
             </button>
