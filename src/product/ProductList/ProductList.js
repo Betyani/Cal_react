@@ -20,8 +20,12 @@ export default function ProductList({ onSelect }) {
   const blockSize = 5;        // 한 블럭당 페이지 수
   const location = useLocation();         //, 로그인 후 원래 위치로 navigate('/login', { state: { from: location } }) 와 같음
   const { isLoggedIn, isMaster, user, loading } = useAuth(); // 훅 구조에 맞게
-  const ownerOf = (p) => p.ownerId ?? p.memberId ?? p.writerId ?? p.userId ?? null; // ✅ 소유자 필드 유연 처리
+  const ownerOf = (p) => p.ownerId ?? p.memberId ?? p.writerId ?? p.userId ?? null; //  소유자 필드 유연 처리
 
+  const handleSelectCategory = (cat) => {
+    if (cat !== category) setCurrentPage(1);   // 다른 카테고리로 이동 시 1페이지로
+    setCategory(cat);
+  };
 
 
   useEffect(() => {
@@ -118,7 +122,7 @@ export default function ProductList({ onSelect }) {
             <button
               key={cat}
               className={`${styles.tabButton} ${category === cat ? styles.active : ''}`}
-              onClick={() => setCategory(cat)}
+              onClick={() => handleSelectCategory(cat)}
             >
               {cat}
             </button>
