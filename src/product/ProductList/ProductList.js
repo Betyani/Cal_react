@@ -193,7 +193,7 @@ export default function ProductList({ onSelect }) {
 
               <div className={styles.meta}>
                 <span className={styles.price}>
-                  {Number(p.price).toLocaleString()}円
+                  {Number(p.price).toLocaleString()}円(税込)
                 </span>
                 <span className={styles.category}>{p.category}</span>
 
